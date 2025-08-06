@@ -7,7 +7,7 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
-const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
+export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -31,11 +31,11 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black bg-opacity-50"
         onClick={onClose}
       />
-      
+
       {/* Modal Content */}
       <div className="relative bg-gray-900 rounded-lg p-6 w-full max-w-md mx-4">
         {/* Header */}
@@ -48,7 +48,7 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
             ✕
           </button>
         </div>
-        
+
         {/* Content */}
         <div className="text-white-text">
           {children}
@@ -57,5 +57,3 @@ const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     </div>
   );
 };
-
-export default Modal; 

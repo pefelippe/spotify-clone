@@ -1,5 +1,3 @@
-import AuthLayout from './layout/AuthLayout';
-import LoginLayout from './layout/LoginLayout';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Login from './pages/Login';
@@ -9,21 +7,46 @@ import ArtistaDetalhes from './pages/ArtistaDetalhes';
 import Playlists from './pages/Playlists';
 import Perfil from './pages/Perfil';
 
-const AppRoutes = () => {
+interface RouteConfig {
+  path: string;
+  element: React.ReactNode;
+}
+
+interface ProtectedRouteConfig {
+  path: string;
+  component: React.ComponentType;
+}
+
+const protectedRoutes: ProtectedRouteConfig[] = [
+  { path: '/', component: Home },
+  { path: '/artistas', component: Artistas },
+  { path: '/artista/:artistId', component: ArtistaDetalhes },
+  { path: '/playlists', component: Playlists },
+  { path: '/perfil', component: Perfil },
+];
+
+const publicRoutes: RouteConfig[] = [
+  {
+    path: '/login',
+    element: <Login />,
+  },
+];
+
+const AppRoutes: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={
-          <LoginLayout>
-            <Login />
-          </LoginLayout>
-        } />
+        {publicRoutes.map(({ path, element }) => (
+          <Route key={path} path={path} element={element} />
+        ))}
 
-        <Route path="/" element={<AuthLayout><Home /></AuthLayout>} />
-        <Route path="/artistas" element={<AuthLayout><Artistas /></AuthLayout>} />
-        <Route path="/artista/:artistId" element={<AuthLayout><ArtistaDetalhes /></AuthLayout>} />
-        <Route path="/playlists" element={<AuthLayout><Playlists /></AuthLayout>} />
-        <Route path="/perfil" element={<AuthLayout><Perfil /></AuthLayout>} />
+        {protectedRoutes.map(({ path, component: Component }) => (
+          <Route
+            key={path}
+            path={path}
+            element={<Component />}
+          />
+        ))}
       </Routes>
     </BrowserRouter>
   );

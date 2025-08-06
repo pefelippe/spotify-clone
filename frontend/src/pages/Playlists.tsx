@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import CustomButton from '../components/CustomButton';
-import Modal from '../components/Modal';
-import { PageHeader, GridLayout, Card } from '../components/shared';
+import { useState } from 'react';
+import { CustomButton } from '../components/CustomButton';
+import { Modal } from '../components/Modal';
+import { PageHeader } from '../components/PageHeader';
+import { GridLayout } from '../components/GridLayout';
+import { Card } from '../components/Card';
 import { playlists } from '../mock';
 
 const Playlists = () => {
@@ -29,12 +31,11 @@ const Playlists = () => {
         />
       </PageHeader>
 
-      {/* Playlists Grid */}
       <GridLayout>
         {playlists.map((playlist) => (
           <Card key={playlist.id} hover>
-            <img 
-              src={playlist.imageUrl} 
+            <img
+              src={playlist.imageUrl}
               alt={playlist.name}
               className="w-full h-32 object-cover rounded-md mb-3"
             />
@@ -48,7 +49,6 @@ const Playlists = () => {
         ))}
       </GridLayout>
 
-      {/* Create Playlist Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
@@ -65,7 +65,7 @@ const Playlists = () => {
               className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white-text placeholder-gray-400 focus:outline-none focus:border-green-spotify"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Descrição (opcional)

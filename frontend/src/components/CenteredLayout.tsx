@@ -1,9 +1,11 @@
+import React from 'react';
+
 interface CenteredLayoutProps {
   children: React.ReactNode;
   maxWidth?: string;
 }
 
-const CenteredLayout = ({ children, maxWidth = "max-w-md" }: CenteredLayoutProps) => {
+export const CenteredLayout = ({ children, maxWidth = 'max-w-md' }: CenteredLayoutProps) => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black-bg p-6">
       <div className={`w-full ${maxWidth}`}>
@@ -12,5 +14,3 @@ const CenteredLayout = ({ children, maxWidth = "max-w-md" }: CenteredLayoutProps
     </div>
   );
 };
-
-export default CenteredLayout; 

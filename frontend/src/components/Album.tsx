@@ -9,7 +9,7 @@ const Album = ({ name, imageUrl, artistName, size = 'md' }: AlbumProps) => {
   const sizeClasses = {
     sm: 'w-24 h-24',
     md: 'w-32 h-32',
-    lg: 'w-48 h-48'
+    lg: 'w-48 h-48',
   };
 
   const defaultImage = 'https://via.placeholder.com/300x300/1DB954/FFFFFF?text=Album';
@@ -17,8 +17,8 @@ const Album = ({ name, imageUrl, artistName, size = 'md' }: AlbumProps) => {
   return (
     <div className="flex flex-col items-center space-y-3 cursor-pointer hover:scale-105 transition-transform duration-200">
       <div className={`${sizeClasses[size]} rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center`}>
-        <img 
-          src={imageUrl || defaultImage} 
+        <img
+          src={imageUrl || defaultImage}
           alt={name}
           className="w-full h-full object-cover"
           onError={(e) => {
@@ -40,4 +40,4 @@ const Album = ({ name, imageUrl, artistName, size = 'md' }: AlbumProps) => {
   );
 };
 
-export default Album; 
+export default Album;

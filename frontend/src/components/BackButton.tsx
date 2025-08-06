@@ -1,3 +1,4 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface BackButtonProps {
@@ -6,7 +7,7 @@ interface BackButtonProps {
   children?: React.ReactNode;
 }
 
-const BackButton = ({ to, className = "", children = "← Voltar" }: BackButtonProps) => {
+export const BackButton = ({ to, className = '', children = '← Voltar' }: BackButtonProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -18,7 +19,7 @@ const BackButton = ({ to, className = "", children = "← Voltar" }: BackButtonP
   };
 
   return (
-    <button 
+    <button
       onClick={handleClick}
       className={`text-white-text hover:text-gray-300 transition-colors text-lg ${className}`}
     >
@@ -26,5 +27,3 @@ const BackButton = ({ to, className = "", children = "← Voltar" }: BackButtonP
     </button>
   );
 };
-
-export default BackButton; 

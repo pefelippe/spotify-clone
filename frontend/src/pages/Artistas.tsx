@@ -1,7 +1,7 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import Album from '../components/Album';
-import { PageHeader } from '../components/shared';
+import { PageHeader } from '../components/PageHeader';
 import { artists } from '../mock';
 
 const Artistas = () => {
@@ -18,10 +18,9 @@ const Artistas = () => {
         subtitle="Aqui você encontra seus artistas preferidos"
       />
 
-      {/* Artists Grid - Flex Column */}
       <div className="flex flex-col space-y-6">
         {artists.map((artist) => (
-          <div 
+          <div
             key={artist.id}
             onClick={() => handleArtistClick(artist.id)}
             className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 cursor-pointer"

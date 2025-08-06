@@ -1,10 +1,12 @@
+import React from 'react';
+
 interface PageHeaderProps {
   title: string;
   subtitle?: string;
   children?: React.ReactNode;
 }
 
-const PageHeader = ({ title, subtitle, children }: PageHeaderProps) => {
+export const PageHeader = ({ title, subtitle, children }: PageHeaderProps) => {
   return (
     <div className="mb-8">
       <h1 className="text-4xl font-bold text-white-text mb-2">
@@ -19,5 +21,3 @@ const PageHeader = ({ title, subtitle, children }: PageHeaderProps) => {
     </div>
   );
 };
-
-export default PageHeader; 

@@ -9,13 +9,13 @@ interface NavigationButtonProps {
   baseClassName?: string;
 }
 
-export const NavigationButton = ({ 
-  name, 
-  icon, 
-  path = '/', 
+export const NavigationButton = ({
+  name,
+  icon,
+  path = '/',
   activeClassName = 'text-white-text',
   inactiveClassName = 'text-[#949EA2] hover:text-white-text',
-  baseClassName = 'w-full flex items-center gap-6 px-2 py-3 rounded-md transition-colors duration-200 font-medium text-left cursor-pointer'
+  baseClassName = 'w-full flex items-center gap-6 px-2 py-3 rounded-md transition-colors duration-200 font-medium text-left cursor-pointer',
 }: NavigationButtonProps) => {
   const location = useLocation();
   const isActive = location.pathname === path;
