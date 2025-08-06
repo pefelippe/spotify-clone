@@ -1,8 +1,9 @@
 
 import { useNavigate } from 'react-router-dom';
-import Album from '../components/Album';
-import { PageHeader } from '../components/PageHeader';
-import { artists } from '../mock';
+
+import Album from '../../components/Album';
+import { PageHeader } from '../../components/layout/PageHeader';
+import { artists } from '../../mock';
 
 const Artistas = () => {
   const navigate = useNavigate();

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { CustomButton } from '../components/CustomButton';
-import { Modal } from '../components/Modal';
-import { PageHeader } from '../components/PageHeader';
-import { GridLayout } from '../components/GridLayout';
-import { Card } from '../components/Card';
-import { playlists } from '../mock';
+
+import { CustomButton } from '../../components/CustomButton';
+import { Modal } from '../../components/CustomModal';
+import { PageHeader } from '../../components/layout/PageHeader';
+import { GridLayout } from '../../components/layout/GridLayout';
+import { Card } from '../../components/CustomCard';
+import { playlists } from '../../mock';
 
 const Playlists = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

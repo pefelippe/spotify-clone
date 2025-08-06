@@ -27,8 +27,8 @@ export const NavigationButton = ({
   return (
     <Link to={path} className="w-full">
       <button className={buttonClasses}>
-        {icon && <span className="text-3xl">{icon}</span>}
-        <span className="text-[24px] font-light">
+        {icon && <span className="text-2xl">{icon}</span>}
+        <span className="text-[20px] font-light">
           {name}
         </span>
       </button>

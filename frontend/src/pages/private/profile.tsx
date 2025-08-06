@@ -1,15 +1,13 @@
 
-import { useNavigate } from 'react-router-dom';
-import { CustomButton } from '../components/CustomButton';
-import { CenteredLayout } from '../components/CenteredLayout';
-import { user } from '../mock';
+
+import { CustomButton } from '../../components/CustomButton';
+import { CenteredLayout } from '../../components/layout/CenteredLayout';
+import { user } from '../../mock';
+import { useAuth } from '../../providers/auth-provider';
 
 const Perfil = () => {
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    navigate('/login');
-  };
+  const { logout } = useAuth();
 
   return (
     <CenteredLayout>
@@ -33,7 +31,7 @@ const Perfil = () => {
 
         <CustomButton
           label="Sair"
-          onClick={handleLogout}
+          onClick={logout}
           variant="primary"
           customClassName="bg-green-spotify hover:bg-green-600 w-full"
         />

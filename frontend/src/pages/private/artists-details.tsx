@@ -1,9 +1,10 @@
 
 import { useParams } from 'react-router-dom';
-import Album from '../components/Album';
-import { BackButton } from '../components/BackButton';
-import { GridLayout } from '../components/GridLayout';
-import { artistDetails } from '../mock';
+
+import Album from '../../components/Album';
+import { BackButton } from '../../components/BackButton';
+import { GridLayout } from '../../components/layout/GridLayout';
+import { artistDetails } from '../../mock';
 
 const ArtistaDetalhes = () => {
   const { artistId } = useParams();

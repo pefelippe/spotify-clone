@@ -11,7 +11,6 @@ export const SidebarItems = [
   { name: 'Perfil', path: '/perfil', icon: '👤' },
 ];
 
-
 export const Sidebar = () => {
   const { installApp } = usePWA();
 
@@ -20,8 +19,8 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="w-[250px] bg-black-bg h-screen p-6 flex flex-col">
-      <Logo className="w-[160px] h-[40px] object-contain mb-8" />
+    <div className="w-[250px] fixed top-0 left-0 bg-black-bg h-screen p-6 flex flex-col">
+      <Logo className="w-[200px] h-[70px] object-contain mb-8" />
 
       <ul className="space-y-1 flex-1">
         {SidebarItems.map((item) => (
