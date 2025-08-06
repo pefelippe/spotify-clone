@@ -1,5 +1,5 @@
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useMemo } from 'react';
 
 import Album from '../../components/Album';
@@ -10,6 +10,7 @@ import { useArtistAlbums } from '../../hooks/useArtistAlbums';
 
 const ArtistaDetalhes = () => {
   const { artistId } = useParams();
+  const navigate = useNavigate();
   const { 
     data, 
     isLoading, 
@@ -25,6 +26,10 @@ const ArtistaDetalhes = () => {
   }, [data]);
 
   const artistName = allAlbums[0]?.artists?.[0]?.name || 'Artista';
+
+  const handleAlbumClick = (albumId: string) => {
+    navigate(`/album/${albumId}`);
+  };
 
   if (!artistId) {
     return (
@@ -66,6 +71,7 @@ const ArtistaDetalhes = () => {
       name={album.name}
       imageUrl={album.images?.[0]?.url || ''}
       size="md"
+      onClick={() => handleAlbumClick(album.id)}
     />
   );
 

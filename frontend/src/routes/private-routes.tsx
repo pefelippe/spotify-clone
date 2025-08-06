@@ -9,6 +9,8 @@ import Home from "../pages/private/home";
 import ArtistaDetalhes from "../pages/private/artists-details";
 import Playlists from "../pages/private/playlist";
 import Perfil from "../pages/private/profile";
+import AlbumDetalhes from "../pages/private/album-details";
+import PlaylistDetalhes from "../pages/private/playlist-details";
 
 interface ProtectedRouteConfig {
     path: string;
@@ -19,7 +21,9 @@ export const privateRoutes: ProtectedRouteConfig[] = [
     { path: '/', component: Home },
     { path: '/artistas', component: Artistas },
     { path: '/artista/:artistId', component: ArtistaDetalhes },
+    { path: '/album/:albumId', component: AlbumDetalhes },
     { path: '/playlists', component: Playlists },
+    { path: '/playlist/:playlistId', component: PlaylistDetalhes },
     { path: '/perfil', component: Perfil },
   ];
 
@@ -34,7 +38,7 @@ export const PrivateRoutes: React.FC = () => {
             key={path}
             path={path}
             element={
-              <div className="flex-1 lg:ml-[250px] p-16  py-4">
+              <div className="flex-1 lg:ml-[250px] ">
                 <Component />
               </div>
             }

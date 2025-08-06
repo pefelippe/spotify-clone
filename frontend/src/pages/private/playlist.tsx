@@ -1,15 +1,16 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { CustomButton } from '../../components/CustomButton';
 import { Modal } from '../../components/CustomModal';
 import { PageHeader } from '../../components/layout/PageHeader';
-import { Card } from '../../components/CustomCard';
 import { PageWithQueryState } from '../../components/PageWithQueryState';
 import { InfiniteScrollList } from '../../components/InfiniteScrollList';
 import { useUserPlaylists } from '../../hooks/useUserPlaylists';
 
 const Playlists = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const { 
     data, 
     isLoading, 
@@ -19,7 +20,6 @@ const Playlists = () => {
     isFetchingNextPage 
   } = useUserPlaylists();
 
-  // Always call hooks in the same order - before any conditional returns
   const allPlaylists = useMemo(() => {
     return data?.pages.flatMap(page => page.items) || [];
   }, [data]);
@@ -30,6 +30,10 @@ const Playlists = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handlePlaylistClick = (playlistId: string) => {
+    navigate(`/playlist/${playlistId}`);
   };
 
   const pageHeader = (
@@ -59,19 +63,24 @@ const Playlists = () => {
   }
 
   const renderPlaylistItem = (playlist: any) => (
-    <Card hover>
+    <div 
+      className="flex items-center space-x-3 cursor-pointer hover:scale-105 transition-transform duration-200 w-fit"
+      onClick={() => handlePlaylistClick(playlist.id)}
+    >
       <img
         src={playlist.images?.[0]?.url || 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'}
         alt={playlist.name}
-        className="w-full h-32 object-cover rounded-md mb-3"
-      />
-      <h3 className="text-white-text font-semibold text-sm truncate">
-        {playlist.name}
-      </h3>
-      <p className="text-gray-400 text-xs">
-        {playlist.tracks?.total || 0} músicas
-      </p>
-    </Card>
+        className="w-[72px] h-[72px] object-cover rounded-md mb-3"
+        />
+      <div className="flex flex-col">
+        <h3 className="text-white-text font-semibold text-sm truncate">
+          {playlist.name}
+        </h3>
+        <h3 className="text-gray-400 text-xs">
+          {playlist.owner.display_name}
+        </h3>
+      </div>
+    </div>
   );
 
   return (
@@ -84,7 +93,7 @@ const Playlists = () => {
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
-        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        className="flex flex-col space-y-4"
         itemClassName=""
         emptyComponent={
           <div className="text-center py-12 text-gray-400 col-span-full">

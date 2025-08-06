@@ -45,25 +45,17 @@ const Perfil = () => {
           />
         </div>
 
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white-text mb-2">
+
+          <h1 className="text-3xl font-bold text-white-text mb-6">
             {userProfile?.display_name || 'Usuário'}
           </h1>
-          <p className="text-gray-400 text-lg">
-            {userProfile?.email || 'Spotify User'}
-          </p>
-          {userProfile?.followers?.total && (
-            <p className="text-gray-400 text-sm mt-1">
-              {userProfile.followers.total.toLocaleString()} seguidores
-            </p>
-          )}
-        </div>
+
 
         <CustomButton
           label="Sair"
           onClick={logout}
           variant="primary"
-          customClassName="bg-green-spotify hover:bg-green-600 w-full"
+          customClassName="bg-green-spotify hover:bg-green-600 w-[300px] mx-auto text-black"
         />
       </div>
     </CenteredLayout>
