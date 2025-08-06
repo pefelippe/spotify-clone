@@ -3,7 +3,7 @@ interface CustomButtonProps {
   onClick: () => void;
   label: string;
   icon?: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'spotify';
+  variant?: 'primary' | 'pwa' | 'outline' | 'ghost' | 'spotify';
   size?: 'sm' | 'md' | 'lg';
   disabled?: boolean;
   customClassName?: string;
@@ -19,7 +19,7 @@ const CustomButton = ({
   customClassName 
 }: CustomButtonProps) => {
 
-  const baseClasses = 'font-bold cursor-pointer flex items-center justify-center transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseClasses = 'font-bold cursor-pointer flex items-center justify-center';
   
   const sizeClasses = {
     sm: 'px-4 py-2 text-sm h-8',
@@ -29,7 +29,7 @@ const CustomButton = ({
 
   const variantClasses = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700 rounded-lg',
-    secondary: 'text-white rounded-lg',
+    pwa: 'text-white rounded-lg font-extrabold text-xl my-6  gap-4 transition-all duration-300 px-0',
     outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg',
     ghost: 'text-gray-700 hover:bg-gray-100 rounded-lg',
     spotify: 'bg-green-spotify text-black-text rounded-[24px] font-bold h-[50px] cursor-pointer flex items-center hover:bg-green-spotify/80 justify-center gap-[10px] px-12'
