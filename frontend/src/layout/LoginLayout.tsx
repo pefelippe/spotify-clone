@@ -6,10 +6,8 @@ interface LoginLayoutProps {
 
 const LoginLayout = ({ children }: LoginLayoutProps) => {
   return (
-    <div className="min-h-screen w-screen bg-black-bg flex items-center justify-center font-family">
-      <div className="w-full max-w-md">
-        {children}
-      </div>
+    <div className="min-h-screen w-screen bg-black-bg flex items-center justify-center font-rubik">
+        {children} 
     </div>
   );
 };

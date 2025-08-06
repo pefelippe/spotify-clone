@@ -1,29 +1,21 @@
-import spotifyLogo from '../assets/spotify-logo.png';
 import CustomButton from '../components/CustomButton';
+import { CustomLabel } from '../components/CustomLabel';
+import { Logo } from '../components/Logo';
 
 const Login = () => {
   const handleSpotifyLogin = () => {
-    // TODO: Implement Spotify OAuth login
     console.log('Spotify login clicked');
   };
 
   return (
-    <div className="rounded-lg text-center flex flex-col items-center justify-center">
-      <img
-        src={spotifyLogo}
-        alt="Spotify"
-        className="mx-auto mb-4 w-[164px] h-[49px] object-contain"
-      />
-
-      <h2 className="text-white-text text-lg font-medium font-weight-500 line-height-[20px] tracking-[0.01em] mb-4">
-          Entra com sua conta Spotify clicando no botão abaixo
-      </h2>
-
-
-      <CustomButton
-        onClick={handleSpotifyLogin}
-        label="Entrar"
-      />
+    <div className="flex items-center justify-center items-center flex flex-col items-center justify-center text-center rounded-lg">
+        <Logo className="w-[200px] h-[60px] object-contain mb-6" />
+        <CustomLabel label="Entra com sua conta Spotify clicando no botão abaixo" />
+        <CustomButton
+          onClick={handleSpotifyLogin}
+          variant="spotify"
+          label="Entrar"
+        />
     </div>
   );
 };

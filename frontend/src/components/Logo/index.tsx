@@ -1,5 +1,5 @@
 
-import spotifyLogo from '../../../../assets/spotify-logo.png';
+import spotifyLogo from '../../assets/spotify-logo.png';
 export const Logo = ( { className }: { className: string } ) => {
   return (
     <img
