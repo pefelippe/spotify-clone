@@ -1,16 +1,23 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import { CustomButton } from '../../components/CustomButton';
 import { Modal } from '../../components/CustomModal';
 import { PageHeader } from '../../components/layout/PageHeader';
-import { GridLayout } from '../../components/layout/GridLayout';
 import { Card } from '../../components/CustomCard';
 import { PageWithQueryState } from '../../components/PageWithQueryState';
+import { InfiniteScrollList } from '../../components/InfiniteScrollList';
 import { useUserPlaylists } from '../../hooks/useUserPlaylists';
 
 const Playlists = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data: userPlaylists, isLoading, error } = useUserPlaylists();
+  const { 
+    data, 
+    isLoading, 
+    error, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useUserPlaylists();
 
   const handleCreatePlaylist = () => {
     setIsModalOpen(true);
@@ -34,43 +41,56 @@ const Playlists = () => {
     </PageHeader>
   );
 
-  const loadingOrErrorState = (
-    <PageWithQueryState
-      isLoading={isLoading}
-      error={error}
-      loadingMessage="Carregando playlists..."
-      errorMessage="Erro ao carregar playlists. Tente novamente."
-      headerContent={pageHeader}
-    />
-  );
-
   if (isLoading || error) {
-    return loadingOrErrorState;
+    return (
+      <PageWithQueryState
+        isLoading={isLoading}
+        error={error}
+        loadingMessage="Carregando playlists..."
+        errorMessage="Erro ao carregar playlists. Tente novamente."
+        headerContent={pageHeader}
+      />
+    );
   }
 
-  const playlists = userPlaylists?.items || [];
+  const allPlaylists = useMemo(() => {
+    return data?.pages.flatMap(page => page.items) || [];
+  }, [data]);
+
+  const renderPlaylistItem = (playlist: any) => (
+    <Card hover>
+      <img
+        src={playlist.images?.[0]?.url || 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'}
+        alt={playlist.name}
+        className="w-full h-32 object-cover rounded-md mb-3"
+      />
+      <h3 className="text-white-text font-semibold text-sm truncate">
+        {playlist.name}
+      </h3>
+      <p className="text-gray-400 text-xs">
+        {playlist.tracks?.total || 0} músicas
+      </p>
+    </Card>
+  );
 
   return (
     <div className="p-6">
       {pageHeader}
 
-      <GridLayout>
-        {playlists.map((playlist: any) => (
-          <Card key={playlist.id} hover>
-            <img
-              src={playlist.images?.[0]?.url || 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'}
-              alt={playlist.name}
-              className="w-full h-32 object-cover rounded-md mb-3"
-            />
-            <h3 className="text-white-text font-semibold text-sm truncate">
-              {playlist.name}
-            </h3>
-            <p className="text-gray-400 text-xs">
-              {playlist.tracks?.total || 0} músicas
-            </p>
-          </Card>
-        ))}
-      </GridLayout>
+      <InfiniteScrollList
+        items={allPlaylists}
+        renderItem={renderPlaylistItem}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+        itemClassName=""
+        emptyComponent={
+          <div className="text-center py-12 text-gray-400 col-span-full">
+            Nenhuma playlist encontrada.
+          </div>
+        }
+      />
 
       <Modal
         isOpen={isModalOpen}

@@ -1,15 +1,23 @@
 
 import { useParams } from 'react-router-dom';
+import { useMemo } from 'react';
 
 import Album from '../../components/Album';
 import { BackButton } from '../../components/BackButton';
-import { GridLayout } from '../../components/layout/GridLayout';
 import { QueryState } from '../../components/QueryState';
+import { InfiniteScrollList } from '../../components/InfiniteScrollList';
 import { useArtistAlbums } from '../../hooks/useArtistAlbums';
 
 const ArtistaDetalhes = () => {
   const { artistId } = useParams();
-  const { data: artistAlbums, isLoading, error } = useArtistAlbums(artistId!);
+  const { 
+    data, 
+    isLoading, 
+    error, 
+    fetchNextPage, 
+    hasNextPage, 
+    isFetchingNextPage 
+  } = useArtistAlbums(artistId!);
 
   if (!artistId) {
     return (
@@ -46,8 +54,19 @@ const ArtistaDetalhes = () => {
     );
   }
 
-  const albums = artistAlbums?.items || [];
-  const artistName = albums[0]?.artists?.[0]?.name || 'Artista';
+  const allAlbums = useMemo(() => {
+    return data?.pages.flatMap(page => page.items) || [];
+  }, [data]);
+
+  const artistName = allAlbums[0]?.artists?.[0]?.name || 'Artista';
+
+  const renderAlbumItem = (album: any) => (
+    <Album
+      name={album.name}
+      imageUrl={album.images?.[0]?.url || ''}
+      size="md"
+    />
+  );
 
   return (
     <div className="p-6">
@@ -57,28 +76,31 @@ const ArtistaDetalhes = () => {
 
       <div className="flex items-center space-x-6 mb-8">
         <img
-          src={albums[0]?.images?.[0]?.url || ''}
+          src={allAlbums[0]?.images?.[0]?.url || ''}
           alt={artistName}
           className="w-24 h-24 rounded-full object-cover"
         />
         <div>
           <h2 className="text-3xl font-bold text-white-text mb-2">{artistName}</h2>
-          <p className="text-gray-400">{albums.length} álbuns</p>
+          <p className="text-gray-400">{allAlbums.length} álbuns</p>
         </div>
       </div>
 
       <div>
         <h3 className="text-xl font-semibold text-white-text mb-6">Álbuns</h3>
-        <GridLayout>
-          {albums.map((album: any) => (
-            <Album
-              key={album.id}
-              name={album.name}
-              imageUrl={album.images?.[0]?.url || ''}
-              size="md"
-            />
-          ))}
-        </GridLayout>
+        <InfiniteScrollList
+          items={allAlbums}
+          renderItem={renderAlbumItem}
+          hasNextPage={hasNextPage}
+          isFetchingNextPage={isFetchingNextPage}
+          fetchNextPage={fetchNextPage}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
+          emptyComponent={
+            <div className="text-center py-12 text-gray-400 col-span-full">
+              Nenhum álbum encontrado.
+            </div>
+          }
+        />
       </div>
     </div>
   );
