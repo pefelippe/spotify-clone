@@ -19,6 +19,11 @@ const Artistas = () => {
     isFetchingNextPage 
   } = useTopArtists();
 
+  // Always call hooks in the same order - before any conditional returns
+  const allArtists = useMemo(() => {
+    return data?.pages.flatMap(page => page.items) || [];
+  }, [data]);
+
   const handleArtistClick = (artistId: string) => {
     navigate(`/artista/${artistId}`);
   };
@@ -41,10 +46,6 @@ const Artistas = () => {
       />
     );
   }
-
-  const allArtists = useMemo(() => {
-    return data?.pages.flatMap(page => page.items) || [];
-  }, [data]);
 
   const renderArtistItem = (artist: any) => (
     <div

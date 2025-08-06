@@ -19,6 +19,11 @@ const Playlists = () => {
     isFetchingNextPage 
   } = useUserPlaylists();
 
+  // Always call hooks in the same order - before any conditional returns
+  const allPlaylists = useMemo(() => {
+    return data?.pages.flatMap(page => page.items) || [];
+  }, [data]);
+
   const handleCreatePlaylist = () => {
     setIsModalOpen(true);
   };
@@ -52,10 +57,6 @@ const Playlists = () => {
       />
     );
   }
-
-  const allPlaylists = useMemo(() => {
-    return data?.pages.flatMap(page => page.items) || [];
-  }, [data]);
 
   const renderPlaylistItem = (playlist: any) => (
     <Card hover>

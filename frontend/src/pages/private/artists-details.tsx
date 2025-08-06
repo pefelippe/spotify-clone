@@ -19,6 +19,13 @@ const ArtistaDetalhes = () => {
     isFetchingNextPage 
   } = useArtistAlbums(artistId!);
 
+  // Always call hooks in the same order - before any conditional returns
+  const allAlbums = useMemo(() => {
+    return data?.pages.flatMap(page => page.items) || [];
+  }, [data]);
+
+  const artistName = allAlbums[0]?.artists?.[0]?.name || 'Artista';
+
   if (!artistId) {
     return (
       <div className="p-6">
@@ -53,12 +60,6 @@ const ArtistaDetalhes = () => {
       </div>
     );
   }
-
-  const allAlbums = useMemo(() => {
-    return data?.pages.flatMap(page => page.items) || [];
-  }, [data]);
-
-  const artistName = allAlbums[0]?.artists?.[0]?.name || 'Artista';
 
   const renderAlbumItem = (album: any) => (
     <Album
