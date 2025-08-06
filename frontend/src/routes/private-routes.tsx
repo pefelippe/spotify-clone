@@ -1,6 +1,8 @@
 import { Routes, Route } from 'react-router-dom';
 
 import { Sidebar } from '../components/Sidebar';
+import { MobileHeader } from '../components/MobileHeader';
+import { BottomNavigation } from '../components/BottomNavigation';
 
 import Artistas from "../pages/private/artists";
 import Home from "../pages/private/home";
@@ -23,21 +25,23 @@ export const privateRoutes: ProtectedRouteConfig[] = [
 
 export const PrivateRoutes: React.FC = () => {
   return (
-    <Routes>
-      {privateRoutes.map(({ path, component: Component }) => (
-        <Route
-          key={path}
-          path={path}
-          element={
-            <div className="flex">
-              <Sidebar />
-              <div className="flex-1 ml-[250px]">
+    <>
+      <MobileHeader />
+      <Sidebar />
+      <Routes>
+        {privateRoutes.map(({ path, component: Component }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <div className="flex-1 lg:ml-[250px] p-16  py-4">
                 <Component />
               </div>
-            </div>
-          }
-        />
-      ))}
-    </Routes>
+            }
+          />
+        ))}
+      </Routes>
+      <BottomNavigation />
+    </>
   );
 };

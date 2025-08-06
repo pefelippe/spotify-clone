@@ -5,10 +5,12 @@ import { Modal } from '../../components/CustomModal';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { GridLayout } from '../../components/layout/GridLayout';
 import { Card } from '../../components/CustomCard';
-import { playlists } from '../../mock';
+import { PageWithQueryState } from '../../components/PageWithQueryState';
+import { useUserPlaylists } from '../../hooks/useUserPlaylists';
 
 const Playlists = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { data: userPlaylists, isLoading, error } = useUserPlaylists();
 
   const handleCreatePlaylist = () => {
     setIsModalOpen(true);
@@ -18,25 +20,45 @@ const Playlists = () => {
     setIsModalOpen(false);
   };
 
+  const pageHeader = (
+    <PageHeader
+      title="Minhas Playlists"
+      subtitle="Sua coleção pessoal de playlists"
+    >
+      <CustomButton
+        label="Criar Playlist"
+        onClick={handleCreatePlaylist}
+        variant="primary"
+        customClassName="bg-green-spotify hover:bg-green-600"
+      />
+    </PageHeader>
+  );
+
+  const loadingOrErrorState = (
+    <PageWithQueryState
+      isLoading={isLoading}
+      error={error}
+      loadingMessage="Carregando playlists..."
+      errorMessage="Erro ao carregar playlists. Tente novamente."
+      headerContent={pageHeader}
+    />
+  );
+
+  if (isLoading || error) {
+    return loadingOrErrorState;
+  }
+
+  const playlists = userPlaylists?.items || [];
+
   return (
     <div className="p-6">
-      <PageHeader
-        title="Minhas Playlists"
-        subtitle="Sua coleção pessoal de playlists"
-      >
-        <CustomButton
-          label="Criar Playlist"
-          onClick={handleCreatePlaylist}
-          variant="primary"
-          customClassName="bg-green-spotify hover:bg-green-600"
-        />
-      </PageHeader>
+      {pageHeader}
 
       <GridLayout>
-        {playlists.map((playlist) => (
+        {playlists.map((playlist: any) => (
           <Card key={playlist.id} hover>
             <img
-              src={playlist.imageUrl}
+              src={playlist.images?.[0]?.url || 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'}
               alt={playlist.name}
               className="w-full h-32 object-cover rounded-md mb-3"
             />
@@ -44,7 +66,7 @@ const Playlists = () => {
               {playlist.name}
             </h3>
             <p className="text-gray-400 text-xs">
-              {playlist.songs} músicas
+              {playlist.tracks?.total || 0} músicas
             </p>
           </Card>
         ))}

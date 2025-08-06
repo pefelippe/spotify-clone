@@ -19,7 +19,7 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="w-[250px] fixed top-0 left-0 bg-black-bg h-screen p-6 flex flex-col">
+    <div className=" fixed top-0 left-0 bg-black-bg h-screen p-6 flex-col hidden lg:flex">
       <Logo className="w-[200px] h-[70px] object-contain mb-8" />
 
       <ul className="space-y-1 flex-1">
