@@ -1,5 +1,3 @@
-// Ícones SVG idênticos ao Spotify oficial
-
 export const PlayIcon = ({ size = 16, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 16 16" fill="currentColor" className={className}>
     <path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.287V1.713z"/>
@@ -96,35 +94,34 @@ export const TimeIcon = ({ size = 16, className = '' }: { size?: number; classNa
   </svg>
 );
 
-// Navigation Icons
 export const HomeIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M13.5 1.515a3 3 0 0 0-3 0L3 5.845a2 2 0 0 0-1 1.732V21a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-6h4v6a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7.577a2 2 0 0 0-1-1.732l-7.5-4.33z"/>
+    <path d="M12.5 7.7a1 1 0 0 0-1 0L1 12.25a1 1 0 0 0 1 1.748h1.25V21a1 1 0 0 0 1 1h6.5a1 1 0 0 0 1-1v-5h2v5a1 1 0 0 0 1 1h6.5a1 1 0 0 0 1-1v-7.002h1.25a1 1 0 0 0 1-1.748L12.5 7.7z"/>
   </svg>
 );
 
 export const SearchIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l4.353 4.353a1 1 0 1 0 1.414-1.414l-4.344-4.344a9.157 9.157 0 0 0 2.077-5.816c0-5.14-4.226-9.28-9.407-9.28zm-7.407 9.279c0-4.006 3.302-7.28 7.407-7.28s7.407 3.274 7.407 7.28-3.302 7.279-7.407 7.279-7.407-3.273-7.407-7.28z"/>
+    <path d="M10.533 1.279c-5.18 0-9.407 4.14-9.407 9.279s4.226 9.279 9.407 9.279c2.234 0 4.29-.77 5.907-2.058l6.353 6.353 1.471-1.471-6.409-6.409A9.249 9.249 0 0 0 20 10.558c0-5.14-4.226-9.279-9.467-9.279zm0 1.643c4.234 0 7.679 3.445 7.679 7.636 0 4.196-3.445 7.636-7.679 7.636-4.234 0-7.679-3.44-7.679-7.636 0-4.191 3.445-7.636 7.679-7.636z"/>
   </svg>
 );
 
 export const LibraryIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zM15.5 2.134A1 1 0 0 0 14 3v18a1 1 0 0 0 1.5.866l8-9a1 1 0 0 0 0-1.732l-8-9zM16 4.732L21.197 12 16 19.268V4.732z"/>
-    <path d="M7 2a1 1 0 0 0-1 1v18a1 1 0 1 0 2 0V3a1 1 0 0 0-1-1z"/>
+    <path d="M3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h12l2.29 2.29 1.42-1.42a1 1 0 0 1 1.41 0l4 4a1 1 0 0 1 .29.7V21a1 1 0 0 1-1 1H3zm7-2h9V9.83L19.17 6H4v13h6z"/>
   </svg>
 );
 
 export const ArtistIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM7.07 18.28c.43-.9 3.05-1.78 4.93-1.78s4.51.88 4.93 1.78C15.57 19.36 13.86 20 12 20s-3.57-.64-4.93-1.72zm11.29-1.45c-1.43-1.74-4.9-2.33-6.36-2.33s-4.93.59-6.36 2.33C4.62 15.49 4 13.82 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8c0 1.82-.62 3.49-1.64 4.83zM12 6c-1.94 0-3.5 1.56-3.5 3.5S10.06 13 12 13s3.5-1.56 3.5-3.5S13.94 6 12 6zm0 5c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z"/>
+    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+    <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
   </svg>
 );
 
 export const PlaylistIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18C16.69 14.07 16.35 14 16 14c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V6h-2z"/>
   </svg>
 );
 
@@ -142,6 +139,38 @@ export const ChevronDownIcon = ({ size = 24, className = '' }: { size?: number; 
 
 export const QueueIcon = ({ size = 24, className = '' }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/>
+    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
   </svg>
 );
+
+export const SpotifyIcons = ({ name, size = 16, className = '' }: { name: string; size?: number; className?: string }) => {
+  const icons: { [key: string]: React.ComponentType<any> } = {
+    play: PlayIcon,
+    pause: PauseIcon,
+    next: SkipNextIcon,
+    previous: SkipPrevIcon,
+    shuffle: ShuffleIcon,
+    repeat: RepeatIcon,
+    'repeat-one': RepeatIcon,
+    volume: VolumeIcon,
+    'volume-mute': VolumeMuteIcon,
+    heart: HeartIcon,
+    plus: PlusIcon,
+    more: MoreIcon,
+    playing: PlayingIcon,
+    user: UserIcon,
+    clock: ClockIcon,
+    time: TimeIcon,
+    home: HomeIcon,
+    search: SearchIcon,
+    library: LibraryIcon,
+    artist: ArtistIcon,
+    playlist: PlaylistIcon,
+    download: DownloadIcon,
+    'chevron-down': ChevronDownIcon,
+    queue: QueueIcon,
+  };
+
+  const IconComponent = icons[name];
+  return IconComponent ? <IconComponent size={size} className={className} /> : null;
+};

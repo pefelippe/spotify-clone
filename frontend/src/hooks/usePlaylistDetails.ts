@@ -1,16 +1,23 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { fetchPlaylistDetails, fetchPlaylistTracks } from '../api/queries/playlist-details';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { fetchPlaylistDetails } from '../api/queries/playlist-details';
 import { useAuth } from '../providers/auth-provider';
 
 export const usePlaylistDetails = (playlistId: string) => {
   const { accessToken } = useAuth();
 
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['playlistDetails', playlistId],
-    queryFn: () => fetchPlaylistDetails(playlistId, accessToken!),
+    queryFn: ({ pageParam = 0 }) => fetchPlaylistDetails(playlistId, accessToken!, 50, pageParam),
     enabled: !!accessToken && !!playlistId,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.next) {
+        return allPages.length * 50;
+      }
+      return undefined;
+    },
+    initialPageParam: 0,
   });
 };
 

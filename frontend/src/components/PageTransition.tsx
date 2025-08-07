@@ -1,26 +1,21 @@
-import { ReactNode, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface PageTransitionProps {
-  children: ReactNode;
-  className?: string;
+  children: React.ReactNode;
 }
 
-export const PageTransition = ({ children, className = '' }: PageTransitionProps) => {
+export const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Trigger animation after component mounts
-    const timer = setTimeout(() => setIsVisible(true), 50);
-    return () => clearTimeout(timer);
+    setIsVisible(true);
   }, []);
 
   return (
     <div
-      className={`transition-all duration-300 ease-out ${
-        isVisible
-          ? 'opacity-100 transform translate-y-0'
-          : 'opacity-0 transform translate-y-4'
-      } ${className}`}
+      className={`transition-opacity duration-300 ease-in-out ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
     >
       {children}
     </div>

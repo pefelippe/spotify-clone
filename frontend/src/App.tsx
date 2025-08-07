@@ -1,32 +1,15 @@
-import { useAuth } from './providers/auth-provider';
-import { PlayerProvider } from './providers/player-provider';
-import { LikedTracksProvider } from './providers/liked-tracks-provider';
-import { MusicPlayer } from './components/MusicPlayer';
-import { PremiumWarning } from './components/PremiumWarning';
-
-import { PrivateRoutes } from './routes/private-routes';
-import { PublicRoutes } from './routes/public-routes';
+import { useAuth } from "./providers/auth-provider";
+import { PrivateRoutes } from "./routes/private-routes";
+import { PublicRoutes } from "./routes/public-routes";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const isAuthenticated = useAuth();
 
-  // Se não está autenticado, mostrar rotas públicas (que incluem redirecionamento para login)
-  if (!isAuthenticated) {
-    return <PublicRoutes />;
+  if (isAuthenticated) {
+    return <PrivateRoutes />;
   }
 
-  // Se está autenticado, mostrar rotas privadas
-  return (
-    <LikedTracksProvider>
-      <PlayerProvider>
-        <div className="min-h-screen" style={{ backgroundColor: '#090707' }}>
-          <PrivateRoutes />
-          <MusicPlayer />
-          <PremiumWarning />
-        </div>
-      </PlayerProvider>
-    </LikedTracksProvider>
-  );
+  return <PublicRoutes />;
 }
 
 export default App;

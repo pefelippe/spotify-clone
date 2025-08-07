@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './auth-provider';
 
 interface PlayerContextData {
@@ -34,9 +34,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   const [isPremiumRequired, setIsPremiumRequired] = useState(false);
 
   useEffect(() => {
-    if (!accessToken) {
-      return;
-    }
+    if (!accessToken) return;
 
     const initializePlayer = () => {
       const spotifyPlayer = new window.Spotify.Player({
@@ -47,7 +45,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         volume: 0.5,
       });
 
-      // Error handling
       spotifyPlayer.addListener('initialization_error', ({ message }) => {
         console.error('❌ Falha ao inicializar player:', message);
       });
@@ -56,8 +53,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         console.error('❌ Falha na autenticação:', message);
       });
 
-      spotifyPlayer.addListener('account_error', ({ message }) => {
-        console.error('❌ Falha ao validar conta Spotify (precisa ser Premium):', message);
+      spotifyPlayer.addListener('account_error', () => {
         setIsPremiumRequired(true);
       });
 
@@ -65,7 +61,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         console.error('❌ Erro de reprodução:', message);
       });
 
-      // Playback status updates
       spotifyPlayer.addListener('player_state_changed', (state) => {
         if (!state) {
           return;
@@ -77,18 +72,15 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         setDuration(state.track_window.current_track.duration_ms);
       });
 
-      // Ready
       spotifyPlayer.addListener('ready', ({ device_id }) => {
         setDeviceId(device_id);
         setIsReady(true);
       });
 
-      // Not Ready
       spotifyPlayer.addListener('not_ready', ({ device_id }) => {
         setIsReady(false);
       });
 
-      // Connect to the player!
       spotifyPlayer.connect().then(success => {
         if (!success) {
           console.error('❌ Falha ao conectar ao Spotify Web Playback SDK');
@@ -97,7 +89,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       setPlayer(spotifyPlayer);
     };
 
-    // Wait for SDK to load
     if (window.Spotify) {
       initializePlayer();
     } else {
@@ -119,36 +110,29 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     let body: any;
 
     if (contextUri) {
-      // Check if the context is an artist - artists don't support offset
       if (contextUri.startsWith('spotify:artist:')) {
-        // For artist context, we can't use offset, so just play from the artist
         body = { context_uri: contextUri };
       } else if (!uri || uri.trim() === '') {
-        // If URI is empty or not provided, play the entire context from the beginning
         body = { context_uri: contextUri };
       } else {
-        // For other contexts (album, playlist) with specific track, use offset
         body = { context_uri: contextUri, offset: { uri } };
       }
     } else {
-      // No context, just play the single track
       body = { uris: [uri] };
     }
-
-
 
     try {
       const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
         method: 'PUT',
-        body: JSON.stringify(body),
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(body),
       });
 
       if (!response.ok) {
-        const errorData = await response.text();
+        const errorData = await response.json();
         console.error('❌ Erro na resposta da API:', {
           status: response.status,
           statusText: response.statusText,
@@ -159,8 +143,6 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
           console.error('❌ Erro 403: Você precisa ter Spotify Premium para usar o Web Playback SDK');
           setIsPremiumRequired(true);
         }
-      } else {
-
       }
     } catch (error) {
       console.error('❌ Erro ao tocar música:', error);
@@ -172,62 +154,62 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const pauseTrack = async () => {
-    if (player) {
+    if (player && isReady) {
       await player.pause();
     }
   };
 
   const resumeTrack = async () => {
-    if (player) {
+    if (player && isReady) {
       await player.resume();
     }
   };
 
   const nextTrack = async () => {
-    if (player) {
+    if (player && isReady) {
       await player.nextTrack();
     }
   };
 
   const previousTrack = async () => {
-    if (player) {
+    if (player && isReady) {
       await player.previousTrack();
     }
   };
 
   const seekToPosition = async (position: number) => {
-    if (player) {
+    if (player && isReady) {
       await player.seek(position);
     }
   };
 
   const setVolume = async (volume: number) => {
-    if (player) {
+    if (player && isReady) {
       await player.setVolume(volume);
     }
   };
 
+  const value: PlayerContextData = {
+    player,
+    isReady,
+    currentTrack,
+    isPlaying,
+    position,
+    duration,
+    deviceId,
+    isPremiumRequired,
+    resetPremiumWarning,
+    playTrack,
+    pauseTrack,
+    resumeTrack,
+    nextTrack,
+    previousTrack,
+    seekToPosition,
+    setVolume,
+  };
+
   return (
-    <PlayerContext.Provider
-      value={{
-        player,
-        isReady,
-        currentTrack,
-        isPlaying,
-        position,
-        duration,
-        deviceId,
-        isPremiumRequired,
-        resetPremiumWarning,
-        playTrack,
-        pauseTrack,
-        resumeTrack,
-        nextTrack,
-        previousTrack,
-        seekToPosition,
-        setVolume,
-      }}
-    >
+    <PlayerContext.Provider value={value}>
       {children}
     </PlayerContext.Provider>
   );
@@ -235,8 +217,8 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
 export const usePlayer = (): PlayerContextData => {
   const context = useContext(PlayerContext);
-  if (!context) {
-    throw new Error('usePlayer deve estar dentro de PlayerProvider');
+  if (context === undefined) {
+    throw new Error('usePlayer must be used within a PlayerProvider');
   }
   return context;
 };

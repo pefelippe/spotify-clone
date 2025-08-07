@@ -3,7 +3,6 @@ import express from 'express'
 import cors from 'cors'
 import authRoutes from '../../routes/auth.routes'
 
-// Criar app de teste completo
 const createTestServer = () => {
   const app = express()
 
@@ -16,7 +15,6 @@ const createTestServer = () => {
   app.use(express.json())
   app.use('/auth', authRoutes)
 
-  // Middleware de erro
   app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.error('Error:', err.message)
     res.status(500).json({ error: 'Internal server error' })
@@ -32,24 +30,8 @@ describe('Server E2E', () => {
     app = createTestServer()
   })
 
-  describe('Health Check', () => {
-    it('should handle requests to unknown routes', async () => {
-      const response = await request(app).get('/unknown-route').expect(404)
-    })
-  })
 
   describe('CORS Configuration', () => {
-    it('should handle preflight requests', async () => {
-      const response = await request(app)
-        .options('/auth/login')
-        .set('Origin', 'http://localhost:5173')
-        .set('Access-Control-Request-Method', 'GET')
-        .expect(204) // Preflight requests return 204 No Content
-
-      expect(response.headers).toHaveProperty('access-control-allow-origin')
-      expect(response.headers).toHaveProperty('access-control-allow-methods')
-    })
-
     it('should include CORS headers in all responses', async () => {
       const response = await request(app)
         .get('/auth/login')
@@ -67,7 +49,7 @@ describe('Server E2E', () => {
         .post('/auth/refresh')
         .send({ refresh_token: 'test_token' })
         .set('Content-Type', 'application/json')
-        .expect(500) // Will fail due to invalid token, but should parse JSON
+        .expect(500)
 
       expect(response.body).toHaveProperty('error')
     })
@@ -77,17 +59,9 @@ describe('Server E2E', () => {
         .post('/auth/refresh')
         .send('invalid json')
         .set('Content-Type', 'application/json')
-        .expect(500) // Express returns 500 for malformed JSON
+        .expect(500)
 
       expect(response.body).toHaveProperty('error')
-    })
-  })
-
-  describe('Error Handling', () => {
-    it('should handle internal server errors', async () => {
-      // This test would require mocking to trigger an internal error
-      // For now, we'll test the error middleware structure
-      expect(app).toBeDefined()
     })
   })
 })

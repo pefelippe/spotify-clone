@@ -1,16 +1,23 @@
-import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
-import { fetchUserProfile, fetchUserPlaylists } from '../api/queries/user-details';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { fetchUserDetails } from '../api/queries/user-details';
 import { useAuth } from '../providers/auth-provider';
 
-export const useUserDetails = (userId: string) => {
+export const useUserDetails = () => {
   const { accessToken } = useAuth();
 
-  return useQuery({
-    queryKey: ['userProfile', userId],
-    queryFn: () => fetchUserProfile(userId, accessToken!),
-    enabled: !!accessToken && !!userId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+  return useInfiniteQuery({
+    queryKey: ['userDetails'],
+    queryFn: ({ pageParam = 0 }) => fetchUserDetails(accessToken!, 20, pageParam),
+    enabled: !!accessToken,
+    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.next) {
+        return allPages.length * 20;
+      }
+      return undefined;
+    },
+    initialPageParam: 0,
   });
 };
 

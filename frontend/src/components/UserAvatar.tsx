@@ -1,49 +1,51 @@
-import { useState } from 'react';
-import { useUserDetails } from '../hooks/useUserDetails';
+import React, { useState } from 'react';
 
 interface UserAvatarProps {
-  userId: string;
-  displayName: string;
+  imageUrl?: string;
+  name?: string;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
 
-export const UserAvatar = ({ userId, displayName, size = 'md', className = '' }: UserAvatarProps) => {
-  const { data: userProfile, isLoading } = useUserDetails(userId);
+export const UserAvatar: React.FC<UserAvatarProps> = ({
+  imageUrl,
+  name = 'User',
+  size = 'md',
+  className = '',
+}) => {
   const [imageError, setImageError] = useState(false);
 
   const sizeClasses = {
-    sm: 'w-6 h-6 text-xs',
-    md: 'w-8 h-8 text-xs',
-    lg: 'w-12 h-12 text-sm',
+    sm: 'w-8 h-8 text-xs',
+    md: 'w-10 h-10 text-sm',
+    lg: 'w-12 h-12 text-base',
   };
 
-  const profileImage = userProfile?.images?.[0]?.url;
-  const initials = displayName?.charAt(0)?.toUpperCase() || 'U';
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
-  // Show loading state
-  if (isLoading) {
-    return (
-      <div className={`${sizeClasses[size]} rounded-full bg-gray-700 animate-pulse ${className}`} />
-    );
-  }
-
-  // Show image if available and no error
-  if (profileImage && !imageError) {
+  if (imageUrl && !imageError) {
     return (
       <img
-        src={profileImage}
-        alt={displayName}
-        className={`${sizeClasses[size]} rounded-full object-cover ${className}`}
+        src={imageUrl}
+        alt={name}
+        className={`rounded-full object-cover ${sizeClasses[size]} ${className}`}
         onError={() => setImageError(true)}
       />
     );
   }
 
-  // Fallback to initials
   return (
-    <div className={`${sizeClasses[size]} rounded-full bg-gray-600 flex items-center justify-center text-white font-medium ${className}`}>
-      {initials}
+    <div
+      className={`rounded-full bg-gray-700 flex items-center justify-center text-white font-medium ${sizeClasses[size]} ${className}`}
+    >
+      {getInitials(name)}
     </div>
   );
 };

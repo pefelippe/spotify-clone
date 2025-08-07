@@ -50,7 +50,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     sessionStorage.removeItem('spotify_token');
     setAccessToken(null);
-    // Remover o token do axios
     delete api.defaults.headers.common['Authorization'];
     navigate('/login');
   };

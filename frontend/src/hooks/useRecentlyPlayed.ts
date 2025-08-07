@@ -9,7 +9,7 @@ export const useRecentlyPlayed = () => {
     queryKey: ['recentlyPlayed'],
     queryFn: () => fetchRecentlyPlayed(accessToken!, 20),
     enabled: !!accessToken,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
     retry: (failureCount, error: any) => {
       if (error?.response?.status === 403) {

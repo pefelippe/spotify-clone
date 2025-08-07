@@ -1,16 +1,14 @@
 
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useMemo, useState } from 'react';
-
-import ArtistAlbum from '../../components/ArtistAlbum';
-import { BackButton } from '../../components/BackButton';
-import { QueryState } from '../../components/QueryState';
-import { InfiniteScrollList } from '../../components/InfiniteScrollList';
-import { TrackList } from '../../components/TrackList';
-import { useArtistDiscography, useArtistCollaborations } from '../../hooks/useArtistAlbums';
-import { useArtistDetails } from '../../hooks/useArtistDetails';
-import { useArtistTopTracks } from '../../hooks/useArtistTopTracks';
+import { useArtistDiscography, useArtistCollaborations, useArtistDetails, useArtistTopTracks } from '../../hooks/useArtistAlbums';
 import { usePlayer } from '../../providers/player-provider';
+import { ArtistAlbum } from '../../components/ArtistAlbum';
+import { TrackList } from '../../components/TrackList';
+import { PageTransition } from '../../components/PageTransition';
+import { CenteredLayout } from '../../components/layout/CenteredLayout';
+import { PageHeader } from '../../components/layout/PageHeader';
+import { GridLayout } from '../../components/layout/GridLayout';
 
 type DiscographyFilter = 'populares' | 'albuns' | 'singles' | 'eps';
 
@@ -19,7 +17,7 @@ const ArtistaDetalhes = () => {
   const navigate = useNavigate();
   const { playTrack, deviceId, isReady } = usePlayer();
   const [discographyFilter, setDiscographyFilter] = useState<DiscographyFilter>('populares');
-  // Discography (albums + singles)
+  
   const {
     data: discographyData,
     isLoading: isLoadingDiscography,
@@ -29,7 +27,6 @@ const ArtistaDetalhes = () => {
     isFetchingNextPage: isFetchingNextDiscographyPage,
   } = useArtistDiscography(artistId!);
 
-  // Collaborations (appears_on)
   const {
     data: collaborationsData,
     isLoading: isLoadingCollaborations,
@@ -39,21 +36,18 @@ const ArtistaDetalhes = () => {
     isFetchingNextPage: isFetchingNextCollaborationsPage,
   } = useArtistCollaborations(artistId!);
 
-  // Artist details
   const {
     data: artistDetails,
     isLoading: isLoadingArtist,
     error: artistError,
   } = useArtistDetails(artistId!);
 
-  // Top tracks
   const {
     data: topTracksData,
     isLoading: isLoadingTopTracks,
     error: topTracksError,
   } = useArtistTopTracks(artistId!);
 
-  // Always call hooks in the same order - before any conditional returns
   const allDiscography = useMemo(() => {
     return discographyData?.pages.flatMap(page =>
       page.items.filter((album: any) => album.album_type !== 'compilation'),
@@ -70,11 +64,9 @@ const ArtistaDetalhes = () => {
     return topTracksData?.tracks?.slice(0, 5) || [];
   }, [topTracksData]);
 
-  // Filtered discography based on selected filter
   const filteredDiscography = useMemo(() => {
     switch (discographyFilter) {
       case 'populares':
-        // Sort by popularity (using release date as proxy for now)
         return [...allDiscography].sort((a: any, b: any) =>
           new Date(b.release_date).getTime() - new Date(a.release_date).getTime(),
         ).slice(0, 20);
@@ -102,7 +94,6 @@ const ArtistaDetalhes = () => {
   const handleAlbumPlay = (albumId: string, albumType: string) => {
     const contextUri = `spotify:album:${albumId}`;
 
-
     if (!isReady) {
       console.warn('⚠️ Player não está pronto ainda');
       return;
@@ -113,176 +104,144 @@ const ArtistaDetalhes = () => {
       return;
     }
 
-    // For all album types (album, single, compilation), play the album context
-    // Pass empty string for uri to play from the beginning of the context
     playTrack('', contextUri);
   };
 
-  // Loading and error states
-  const isAnyLoading = isLoadingDiscography || isLoadingCollaborations || isLoadingArtist || isLoadingTopTracks;
-  const hasAnyError = discographyError || collaborationsError || artistError || topTracksError;
-
-  if (!artistId) {
+  if (isLoadingArtist && isLoadingDiscography) {
     return (
-      <div className="w-full p-6">
-        <div className="flex items-center space-x-4 mb-8">
-          <BackButton artistName="Artista não encontrado" />
-          <h1 className="text-2xl font-bold text-white-text">Artista não encontrado</h1>
+      <CenteredLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
         </div>
-      </div>
+      </CenteredLayout>
     );
   }
 
-  const backButtonHeader = (
-    <div className="flex items-center space-x-4 mb-8">
-      <BackButton artistName="Artista não encontrado" />
-      <h1 className="text-2xl font-bold text-white-text">
-        {isAnyLoading ? 'Carregando artista...' : 'Erro ao carregar artista'}
-      </h1>
-    </div>
-  );
-
-  if (isAnyLoading || hasAnyError) {
+  if (artistError || discographyError) {
     return (
-      <div className="w-full p-6">
-        {backButtonHeader}
-        <QueryState
-          isLoading={isAnyLoading}
-          error={hasAnyError}
-          loadingMessage=""
-          errorMessage="Tente novamente mais tarde."
-          centered={false}
-        />
-      </div>
+      <CenteredLayout>
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-white mb-2">Erro ao carregar artista</h2>
+          <p className="text-gray-400">Tente novamente mais tarde.</p>
+        </div>
+      </CenteredLayout>
     );
   }
 
   const renderAlbumItem = (album: any) => (
     <ArtistAlbum
-      name={album.name}
-      imageUrl={album.images?.[0]?.url || ''}
-      releaseDate={album.release_date}
-      albumType={album.album_type}
-      albumId={album.id}
+      key={album.id}
+      album={album}
       onClick={() => handleAlbumClick(album.id)}
       onPlay={() => handleAlbumPlay(album.id, album.album_type)}
     />
   );
 
   return (
-    <div className="w-full p-6">
-      <div className="flex items-center space-x-4 mb-8">
-        <BackButton artistName={artistName} />
-      </div>
+    <PageTransition>
+      <CenteredLayout>
+        <PageHeader title={artistName} showBackButton />
+        
+        <div className="space-y-8">
+          {artistDetails && (
+            <div className="bg-gray-800 rounded-lg p-6">
+              <div className="flex items-center space-x-4">
+                {artistDetails.images?.[0] && (
+                  <img
+                    src={artistDetails.images[0].url}
+                    alt={artistDetails.name}
+                    className="w-20 h-20 rounded-full object-cover"
+                  />
+                )}
+                <div>
+                  <h1 className="text-2xl font-bold text-white">{artistDetails.name}</h1>
+                  {artistDetails.genres && artistDetails.genres.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {artistDetails.genres.slice(0, 5).map((genre: string) => (
+                        <span
+                          key={genre}
+                          className="px-2 py-1 bg-gray-700 text-gray-300 text-xs rounded-full"
+                        >
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
-      <div className="flex items-start space-x-6 mb-8">
-        <img
-          src={artistDetails?.images?.[0]?.url || allDiscography[0]?.images?.[0]?.url || ''}
-          alt={artistName}
-          className="w-24 h-24 rounded-full object-cover"
-        />
-        <div className="flex-1">
-          <h2 className="text-3xl font-bold text-white-text mb-2">{artistName}</h2>
-          <div className="flex items-center space-x-4 mb-3">
-            {artistDetails?.followers?.total && (
-              <p className="text-gray-400">
-                {artistDetails.followers.total.toLocaleString()} seguidores
-              </p>
+          {topTracks.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-4">Músicas Populares</h2>
+              <TrackList tracks={topTracks} />
+            </div>
+          )}
+
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-white">Discografia</h2>
+              <div className="flex space-x-2">
+                {(['populares', 'albuns', 'singles', 'eps'] as DiscographyFilter[]).map((filter) => (
+                  <button
+                    key={filter}
+                    onClick={() => setDiscographyFilter(filter)}
+                    className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                      discographyFilter === filter
+                        ? 'bg-green-500 text-black'
+                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                    }`}
+                  >
+                    {filter === 'populares' && 'Populares'}
+                    {filter === 'albuns' && 'Álbuns'}
+                    {filter === 'singles' && 'Singles'}
+                    {filter === 'eps' && 'EPs'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <GridLayout>
+              {filteredDiscography.map(renderAlbumItem)}
+            </GridLayout>
+            
+            {hasNextDiscographyPage && (
+              <div className="text-center mt-6">
+                <button
+                  onClick={() => fetchNextDiscographyPage()}
+                  disabled={isFetchingNextDiscographyPage}
+                  className="px-6 py-2 bg-green-500 text-black font-medium rounded-full hover:bg-green-400 disabled:opacity-50"
+                >
+                  {isFetchingNextDiscographyPage ? 'Carregando...' : 'Carregar mais'}
+                </button>
+              </div>
             )}
-            <p className="text-gray-400">{allDiscography.length} lançamentos</p>
           </div>
 
-          {/* Genres as tags */}
-          {artistDetails?.genres && artistDetails.genres.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {artistDetails.genres.slice(0, 4).map((genre: string, index: number) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-gray-800 text-gray-300 text-sm rounded-full border border-gray-700"
-                >
-                  {genre}
-                </span>
-              ))}
+          {allCollaborations.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-4">Colaborações</h2>
+              <GridLayout>
+                {allCollaborations.map(renderAlbumItem)}
+              </GridLayout>
+              
+              {hasNextCollaborationsPage && (
+                <div className="text-center mt-6">
+                  <button
+                    onClick={() => fetchNextCollaborationsPage()}
+                    disabled={isFetchingNextCollaborationsPage}
+                    className="px-6 py-2 bg-green-500 text-black font-medium rounded-full hover:bg-green-400 disabled:opacity-50"
+                  >
+                    {isFetchingNextCollaborationsPage ? 'Carregando...' : 'Carregar mais'}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
-      </div>
-
-      {/* Popular Tracks */}
-      {topTracks.length > 0 && (
-        <div className="mb-6">
-          <h3 className="text-2xl font-semibold text-white-text mb-6">Musicas Populares</h3>
-          <TrackList
-            data={{ pages: [{ items: topTracks }] }}
-            isPlaylist={false}
-            contextUri={`spotify:artist:${artistId}`}
-          />
-        </div>
-      )}
-
-      {/* Discography with Filters */}
-      {allDiscography.length > 0 && (
-        <div className="mb-12">
-          <h3 className="text-2xl font-semibold text-white-text mb-6">Discografia</h3>
-
-          {/* Filter Tabs */}
-          <div className="flex space-x-1 mb-6 bg-gray-800 p-1 rounded-lg w-fit">
-            {[
-              { key: 'populares', label: 'Lançamentos populares' },
-              { key: 'albuns', label: 'Álbuns' },
-              { key: 'singles', label: 'Singles' },
-              { key: 'eps', label: 'EPs' },
-            ].map((filter) => (
-              <button
-                key={filter.key}
-                onClick={() => setDiscographyFilter(filter.key as DiscographyFilter)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                  discographyFilter === filter.key
-                    ? 'bg-white text-black'
-                    : 'text-gray-300 hover:text-white'
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
-
-          <InfiniteScrollList
-            items={filteredDiscography}
-            renderItem={renderAlbumItem}
-            hasNextPage={hasNextDiscographyPage}
-            isFetchingNextPage={isFetchingNextDiscographyPage}
-            fetchNextPage={fetchNextDiscographyPage}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-            emptyComponent={
-              <div className="text-center py-12 text-gray-400 col-span-full">
-                Nenhum lançamento encontrado.
-              </div>
-            }
-          />
-        </div>
-      )}
-
-      {/* Collaborations/Features */}
-      {allCollaborations.length > 0 && (
-        <div>
-          <h3 className="text-xl font-semibold text-white-text mb-6">Com o artista</h3>
-          <InfiniteScrollList
-            items={allCollaborations}
-            renderItem={renderAlbumItem}
-            hasNextPage={hasNextCollaborationsPage}
-            isFetchingNextPage={isFetchingNextCollaborationsPage}
-            fetchNextPage={fetchNextCollaborationsPage}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4"
-            emptyComponent={
-              <div className="text-center py-12 text-gray-400 col-span-full">
-                Nenhuma colaboração encontrada.
-              </div>
-            }
-          />
-        </div>
-      )}
-    </div>
+      </CenteredLayout>
+    </PageTransition>
   );
 };
 

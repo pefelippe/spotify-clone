@@ -25,7 +25,6 @@ export const PublicRoutes: React.FC = () => {
       {publicRoutes.map(({ path, element }) => (
         <Route key={path} path={path} element={element} />
       ))}
-      {/* Catch-all route - redirect to login */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );

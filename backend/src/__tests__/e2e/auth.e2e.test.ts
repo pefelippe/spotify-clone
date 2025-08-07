@@ -3,7 +3,6 @@ import express from 'express'
 import cors from 'cors'
 import authRoutes from '../../routes/auth.routes'
 
-// Criar app de teste
 const createTestApp = () => {
   const app = express()
 
@@ -28,7 +27,7 @@ describe('Auth Routes E2E', () => {
 
   describe('GET /auth/login', () => {
     it('should redirect to Spotify authorization URL', async () => {
-      const response = await request(app).get('/auth/login').expect(302) // Redirect status
+      const response = await request(app).get('/auth/login').expect(302)
 
       expect(response.header.location).toContain('https://accounts.spotify.com/authorize')
       expect(response.header.location).toContain('client_id=')
