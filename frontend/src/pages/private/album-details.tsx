@@ -1,11 +1,13 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { BackButton } from '../../components/BackButton';
 import { QueryState } from '../../components/QueryState';
 import { TrackList } from '../../components/TrackList';
+import { UserAvatar } from '../../components/UserAvatar';
 import { useAlbumDetails, useAlbumTracks } from '../../hooks/useAlbumDetails';
 
 const AlbumDetalhes = () => {
   const { albumId } = useParams();
+  const navigate = useNavigate();
   const { data: albumDetails, isLoading: isLoadingDetails, error: detailsError } = useAlbumDetails(albumId!);
   const { 
     data: tracksData, 
@@ -47,6 +49,10 @@ const AlbumDetalhes = () => {
     );
   }
 
+  const handleArtistClick = (artistId: string) => {
+    navigate(`/artista/${artistId}`);
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR', {
@@ -54,6 +60,26 @@ const AlbumDetalhes = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const formatTotalDuration = (tracks: any) => {
+    if (!tracks?.pages) {
+      return '';
+    }
+    
+    const totalMs = tracks.pages.reduce((total: number, page: any) => {
+      return total + page.items.reduce((pageTotal: number, item: any) => {
+        return pageTotal + (item.duration_ms || 0);
+      }, 0);
+    }, 0);
+    
+    const hours = Math.floor(totalMs / 3600000);
+    const minutes = Math.floor((totalMs % 3600000) / 60000);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}min`;
+    }
+    return `${minutes} min`;
   };
 
   return (
@@ -71,19 +97,37 @@ const AlbumDetalhes = () => {
         />
         <div className="flex-1">
           <p className="text-gray-400 text-sm font-medium uppercase tracking-wide">
-            {albumDetails.album_type}
+            {albumDetails.album_type === 'album' ? 'Álbum' : 
+             albumDetails.album_type === 'single' ? 'Single' : 
+             albumDetails.album_type}
           </p>
           <h1 className="text-4xl md:text-6xl font-bold text-white-text mb-4">
             {albumDetails.name}
           </h1>
           <div className="flex flex-wrap items-center text-gray-400 text-sm space-x-1">
-            <span className="font-medium text-white-text">
-              {albumDetails.artists?.[0]?.name}
-            </span>
+            <div className="flex items-center space-x-2">
+              <UserAvatar 
+                userId={albumDetails.artists?.[0]?.id || ''} 
+                displayName={albumDetails.artists?.[0]?.name || ''} 
+                size="md"
+              />
+              <span 
+                className="font-medium text-white-text hover:underline cursor-pointer hover:text-green-500"
+                onClick={() => handleArtistClick(albumDetails.artists?.[0]?.id)}
+              >
+                {albumDetails.artists?.[0]?.name}
+              </span>
+            </div>
             <span>•</span>
             <span>{formatDate(albumDetails.release_date)}</span>
             <span>•</span>
             <span>{albumDetails.total_tracks} músicas</span>
+            {tracksData && (
+              <>
+                <span>•</span>
+                <span>{formatTotalDuration(tracksData)}</span>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -109,6 +153,7 @@ const AlbumDetalhes = () => {
             isFetchingNextPage={isFetchingNextPage}
             fetchNextPage={fetchNextPage}
             isPlaylist={false}
+            contextUri={`spotify:album:${albumId}`}
           />
         )}
       </div>

@@ -6,6 +6,7 @@ import Album from '../../components/Album';
 import { PageHeader } from '../../components/layout/PageHeader';
 import { PageWithQueryState } from '../../components/PageWithQueryState';
 import { InfiniteScrollList } from '../../components/InfiniteScrollList';
+
 import { useTopArtists } from '../../hooks/useTopArtists';
 
 const Artistas = () => {
@@ -50,7 +51,7 @@ const Artistas = () => {
   const renderArtistItem = (artist: any) => (
     <div
       onClick={() => handleArtistClick(artist.id)}
-      className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 cursor-pointer"
+      className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-800 cursor-pointer"
     >
       <Album
         name={artist.name}

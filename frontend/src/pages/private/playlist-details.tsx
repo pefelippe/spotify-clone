@@ -1,11 +1,13 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { BackButton } from '../../components/BackButton';
 import { QueryState } from '../../components/QueryState';
 import { TrackList } from '../../components/TrackList';
+import { UserAvatar } from '../../components/UserAvatar';
 import { usePlaylistDetails, usePlaylistTracks } from '../../hooks/usePlaylistDetails';
 
 const PlaylistDetalhes = () => {
   const { playlistId } = useParams();
+  const navigate = useNavigate();
   const { data: playlistDetails, isLoading: isLoadingDetails, error: detailsError } = usePlaylistDetails(playlistId!);
   const { 
     data: tracksData, 
@@ -15,6 +17,10 @@ const PlaylistDetalhes = () => {
     hasNextPage,
     isFetchingNextPage 
   } = usePlaylistTracks(playlistId!);
+
+  const handleOwnerClick = (ownerId: string) => {
+    navigate(`/user/${ownerId}`);
+  };
 
   if (!playlistId) {
     return (
@@ -56,6 +62,26 @@ const PlaylistDetalhes = () => {
     });
   };
 
+  const formatTotalDuration = (tracks: any) => {
+    if (!tracks?.pages) {
+      return '';
+    }
+    
+    const totalMs = tracks.pages.reduce((total: number, page: any) => {
+      return total + page.items.reduce((pageTotal: number, item: any) => {
+        return pageTotal + (item.track?.duration_ms || 0);
+      }, 0);
+    }, 0);
+    
+    const hours = Math.floor(totalMs / 3600000);
+    const minutes = Math.floor((totalMs % 3600000) / 60000);
+    
+    if (hours > 0) {
+      return `${hours}h ${minutes}min`;
+    }
+    return `${minutes} min`;
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center space-x-4 mb-8">
@@ -82,9 +108,19 @@ const PlaylistDetalhes = () => {
             </p>
           )}
           <div className="flex flex-wrap items-center text-gray-400 text-sm space-x-1">
-            <span className="font-medium text-white-text">
-              {playlistDetails.owner?.display_name}
-            </span>
+            <div className="flex items-center space-x-2">
+              <UserAvatar 
+                userId={playlistDetails.owner?.id || ''} 
+                displayName={playlistDetails.owner?.display_name || ''} 
+                size="md"
+              />
+              <span 
+                className="font-medium text-white-text hover:underline cursor-pointer hover:text-green-500"
+                onClick={() => handleOwnerClick(playlistDetails.owner?.id)}
+              >
+                {playlistDetails.owner?.display_name}
+              </span>
+            </div>
             {playlistDetails.followers?.total && (
               <>
                 <span>•</span>
@@ -93,6 +129,12 @@ const PlaylistDetalhes = () => {
             )}
             <span>•</span>
             <span>{playlistDetails.tracks?.total} músicas</span>
+            {tracksData && (
+              <>
+                <span>•</span>
+                <span>{formatTotalDuration(tracksData)}</span>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -118,6 +160,7 @@ const PlaylistDetalhes = () => {
             isFetchingNextPage={isFetchingNextPage}
             fetchNextPage={fetchNextPage}
             isPlaylist={true}
+            contextUri={`spotify:playlist:${playlistId}`}
           />
         )}
       </div>

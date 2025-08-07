@@ -7,10 +7,13 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { PageWithQueryState } from '../../components/PageWithQueryState';
 import { InfiniteScrollList } from '../../components/InfiniteScrollList';
 import { useUserPlaylists } from '../../hooks/useUserPlaylists';
+import { usePlayer } from '../../providers/player-provider';
+import PlaylistItem from '../../components/PlaylistItem';
 
 const Playlists = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { playTrack } = usePlayer();
   const { 
     data, 
     isLoading, 
@@ -34,6 +37,12 @@ const Playlists = () => {
 
   const handlePlaylistClick = (playlistId: string) => {
     navigate(`/playlist/${playlistId}`);
+  };
+
+  const handlePlaylistPlay = (playlistId: string) => {
+    const contextUri = `spotify:playlist:${playlistId}`;
+    console.log('🎵 Tentando tocar playlist:', { playlistId, contextUri });
+    playTrack('', contextUri);
   };
 
   const pageHeader = (
@@ -63,24 +72,14 @@ const Playlists = () => {
   }
 
   const renderPlaylistItem = (playlist: any) => (
-    <div 
-      className="flex items-center space-x-3 cursor-pointer hover:scale-105 transition-transform duration-200 w-fit"
+    <PlaylistItem
+      name={playlist.name}
+      imageUrl={playlist.images?.[0]?.url}
+      ownerName={playlist.owner.display_name}
+      playlistId={playlist.id}
       onClick={() => handlePlaylistClick(playlist.id)}
-    >
-      <img
-        src={playlist.images?.[0]?.url || 'https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36'}
-        alt={playlist.name}
-        className="w-[72px] h-[72px] object-cover rounded-md mb-3"
-        />
-      <div className="flex flex-col">
-        <h3 className="text-white-text font-semibold text-sm truncate">
-          {playlist.name}
-        </h3>
-        <h3 className="text-gray-400 text-xs">
-          {playlist.owner.display_name}
-        </h3>
-      </div>
-    </div>
+      onPlay={() => handlePlaylistPlay(playlist.id)}
+    />
   );
 
   return (

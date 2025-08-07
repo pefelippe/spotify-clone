@@ -10,6 +10,9 @@ const SCOPES = [
   'playlist-read-private',
   'playlist-modify-public',
   'playlist-modify-private',
+  'streaming',
+  'user-read-playback-state',
+  'user-modify-playback-state',
 ].join(' ')
 
 export const login = (_: Request, res: Response) => {
@@ -53,7 +56,7 @@ export const callback = async (req: Request, res: Response) => {
 }
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const refresh_token = req.body.refresh_token
+  const { refresh_token } = req.body
   if (!refresh_token) {
     console.log('Missing refresh_token')
     return res.status(400).json({ error: 'Missing refresh_token' })

@@ -69,7 +69,10 @@ export const InfiniteScrollList = ({
   return (
     <div className={className}>
       {items.map((item, index) => (
-        <div key={item.id || index} className={itemClassName}>
+        <div 
+          key={item.id || index} 
+          className={itemClassName}
+        >
           {renderItem(item, index)}
         </div>
       ))}

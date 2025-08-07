@@ -26,7 +26,9 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -43,7 +45,7 @@ export const Modal = ({ isOpen, onClose, title, children }: ModalProps) => {
           <h2 className="text-xl font-bold text-white-text">{title}</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white-text transition-colors"
+            className="text-gray-400 hover:text-white-text transition-colors cursor-pointer"
           >
             ✕
           </button>
