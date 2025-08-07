@@ -101,14 +101,7 @@ const ArtistaDetalhes = () => {
 
   const handleAlbumPlay = (albumId: string, albumType: string) => {
     const contextUri = `spotify:album:${albumId}`;
-    console.log('🎵 Tentando tocar álbum:', { 
-      albumId, 
-      albumType, 
-      contextUri, 
-      deviceId, 
-      isReady,
-      hasPlayTrack: !!playTrack 
-    });
+
     
     if (!isReady) {
       console.warn('⚠️ Player não está pronto ainda');

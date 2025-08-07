@@ -19,8 +19,7 @@ export const useAddToPlaylist = () => {
         queryKey: ['playlistTracks', variables.playlistId]
       });
       
-      // Show success message
-      console.log('✅ Música adicionada à playlist com sucesso!');
+      // Música adicionada com sucesso
     },
     onError: (error: any) => {
       console.error('❌ Erro ao adicionar música à playlist:', error);

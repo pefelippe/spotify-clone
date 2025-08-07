@@ -39,12 +39,9 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
 
     const initializePlayer = () => {
-      console.log('🎵 Inicializando Spotify Player...');
-      
       const spotifyPlayer = new window.Spotify.Player({
         name: 'Spotify Clone Player',
         getOAuthToken: (cb) => {
-          console.log('🔑 Fornecendo token de acesso...');
           cb(accessToken);
         },
         volume: 0.5,
@@ -82,23 +79,18 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
 
       // Ready
       spotifyPlayer.addListener('ready', ({ device_id }) => {
-        console.log('✅ Player pronto! Device ID:', device_id);
         setDeviceId(device_id);
         setIsReady(true);
       });
 
       // Not Ready
       spotifyPlayer.addListener('not_ready', ({ device_id }) => {
-        console.log('❌ Device ID offline:', device_id);
         setIsReady(false);
       });
 
       // Connect to the player!
-      console.log('🔗 Conectando ao player...');
       spotifyPlayer.connect().then(success => {
-        if (success) {
-          console.log('✅ Conectado com sucesso ao Spotify Web Playback SDK');
-        } else {
+        if (!success) {
           console.error('❌ Falha ao conectar ao Spotify Web Playback SDK');
         }
       });
@@ -120,10 +112,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
   }, [accessToken]);
 
   const playTrack = async (uri: string, contextUri?: string) => {
-    console.log('🎵 Tentando tocar música:', { uri, contextUri, deviceId, hasToken: !!accessToken });
-    
     if (!deviceId || !accessToken) {
-      console.error('❌ Device ID ou Access Token não disponível:', { deviceId, hasToken: !!accessToken });
       return;
     }
 
@@ -134,11 +123,9 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       if (contextUri.startsWith('spotify:artist:')) {
         // For artist context, we can't use offset, so just play from the artist
         body = { context_uri: contextUri };
-        console.log('🎵 Contexto de artista detectado - não usando offset');
       } else if (!uri || uri.trim() === '') {
         // If URI is empty or not provided, play the entire context from the beginning
         body = { context_uri: contextUri };
-        console.log('🎵 URI vazio detectado - tocando contexto inteiro do início');
       } else {
         // For other contexts (album, playlist) with specific track, use offset
         body = { context_uri: contextUri, offset: { uri } };
@@ -148,7 +135,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       body = { uris: [uri] };
     }
 
-    console.log('🎵 Enviando request para Spotify API:', body);
+
 
     try {
       const response = await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${deviceId}`, {
@@ -173,7 +160,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
           setIsPremiumRequired(true);
         }
       } else {
-        console.log('✅ Música enviada com sucesso para reprodução');
+  
       }
     } catch (error) {
       console.error('❌ Erro ao tocar música:', error);

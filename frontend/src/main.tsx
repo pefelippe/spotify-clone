@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { AuthProvider } from './providers/auth-provider.js';
 import { ReactQueryProvider } from './providers/react-query-provider.js';
+import { LikedTracksProvider } from './providers/liked-tracks-provider';
 
 import './tailwind.css';
 
@@ -14,7 +15,9 @@ createRoot(document.getElementById('root') as HTMLElement).render(
     <ReactQueryProvider>
       <BrowserRouter>
         <AuthProvider>
-          <App />
+          <LikedTracksProvider>
+            <App />
+          </LikedTracksProvider>
         </AuthProvider>
       </BrowserRouter>
     </ReactQueryProvider>

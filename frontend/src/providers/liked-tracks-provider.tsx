@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { useLikedSongs } from '../hooks/useLikedSongs';
 
 interface LikedTracksContextData {
   likedTracks: Set<string>;
@@ -12,6 +13,22 @@ const LikedTracksContext = createContext<LikedTracksContextData | undefined>(und
 
 export const LikedTracksProvider = ({ children }: { children: ReactNode }) => {
   const [likedTracks, setLikedTracks] = useState<Set<string>>(new Set());
+  const { data: likedSongsData } = useLikedSongs();
+
+  // Sincronizar com os dados da API do Spotify
+  useEffect(() => {
+    if (likedSongsData) {
+      const trackIds = new Set<string>();
+      likedSongsData.pages.forEach(page => {
+        page.items.forEach((item: any) => {
+          if (item.track?.id) {
+            trackIds.add(item.track.id);
+          }
+        });
+      });
+      setLikedTracks(trackIds);
+    }
+  }, [likedSongsData]);
 
   const isTrackLiked = (trackId: string): boolean => {
     return likedTracks.has(trackId);
@@ -22,10 +39,8 @@ export const LikedTracksProvider = ({ children }: { children: ReactNode }) => {
       const newSet = new Set(prev);
       if (newSet.has(trackId)) {
         newSet.delete(trackId);
-        console.log('❤️ Removido dos favoritos:', trackId);
       } else {
         newSet.add(trackId);
-        console.log('💚 Adicionado aos favoritos:', trackId);
       }
       return newSet;
     });

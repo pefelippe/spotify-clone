@@ -18,15 +18,7 @@ const Home = () => {
   const userPlaylists = playlistsData?.pages[0]?.items?.slice(0, 5) || []; // Reduzido para 5 para dar espaço para Liked Songs
   const likedSongsCount = likedSongsData?.pages[0]?.total || 0;
 
-  // Debug log para liked songs
-  console.log('🎵 Liked Songs Debug:', { 
-    likedSongsData, 
-    likedSongsCount, 
-    isLoadingLikedSongs, 
-    likedSongsError,
-    hasData: !!likedSongsData,
-    firstPage: likedSongsData?.pages[0]
-  });
+
 
   const handleArtistClick = (artistId: string) => {
     navigate(`/artist/${artistId}`);
@@ -37,27 +29,16 @@ const Home = () => {
   };
 
   const handleLikedSongsClick = () => {
-    console.log('🎵 Clicou em Músicas Curtidas');
-    // Por enquanto, vamos navegar para a página de playlists
-    // TODO: Criar página específica para liked songs (/liked-songs)
-    navigate('/playlists');
+    // Navegar para a página de liked songs como playlist especial
+    navigate('/playlists/liked-songs');
   };
 
   const handlePlaylistPlay = (playlistId: string) => {
-    console.log('🎵 Tentando tocar playlist:', { 
-      playlistId, 
-      deviceId, 
-      isReady,
-      hasPlayTrack: !!playTrack 
-    });
-    
     if (!isReady) {
-      console.warn('⚠️ Player não está pronto ainda');
       return;
     }
     
     if (!deviceId) {
-      console.warn('⚠️ Device ID não disponível');
       return;
     }
     
@@ -66,20 +47,11 @@ const Home = () => {
   };
 
   const handleArtistPlay = (artistId: string) => {
-    console.log('🎵 Tentando tocar artista:', { 
-      artistId, 
-      deviceId, 
-      isReady,
-      hasPlayTrack: !!playTrack 
-    });
-    
     if (!isReady) {
-      console.warn('⚠️ Player não está pronto ainda');
       return;
     }
     
     if (!deviceId) {
-      console.warn('⚠️ Device ID não disponível');
       return;
     }
     
@@ -88,15 +60,11 @@ const Home = () => {
   };
 
   const handleLikedSongsPlay = () => {
-    console.log('🎵 Tentando tocar músicas curtidas');
-    
     if (!isReady) {
-      console.warn('⚠️ Player não está pronto ainda');
       return;
     }
     
     if (!deviceId) {
-      console.warn('⚠️ Device ID não disponível');
       return;
     }
     
@@ -105,63 +73,45 @@ const Home = () => {
     playTrack('', contextUri);
   };
 
-  // Horário baseado na saudação
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-      return "Bom dia";
-    }
-    if (hour < 18) {
-      return "Boa tarde";
-    }
-    return "Boa noite";
-  };
 
   // Quick access playlists (Liked Songs + primeiras 5 playlists em grid)
   const quickAccessPlaylists = userPlaylists.slice(0, 5);
 
   return (
     <div className="w-full p-6 space-y-8">
-      {/* Greeting Header */}
-      <div>
-        <h1 className="text-3xl lg:text-4xl font-bold text-white mb-8">
-          {getGreeting()}
-        </h1>
-      </div>
-
-      {/* Quick Access Grid */}
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {/* Liked Songs Card */}
-          {(likedSongsCount > 0 || isLoadingLikedSongs || likedSongsError) && (
-            <div
-              className="group flex items-center bg-gradient-to-r from-purple-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 rounded-lg overflow-hidden cursor-pointer transition-all duration-200"
-              onClick={handleLikedSongsClick}
-            >
+          <div
+            className="group flex items-center bg-gradient-to-r from-purple-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 rounded-lg overflow-hidden cursor-pointer transition-all duration-200"
+            onClick={handleLikedSongsClick}
+          >
               <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-white flex items-center justify-center">
                 <HeartIcon size={32} className="text-white" filled />
               </div>
               <div className="flex-1 px-4">
                 <h3 className="text-white font-medium">Músicas Curtidas</h3>
                 <p className="text-gray-200 text-sm">
-                  {isLoadingLikedSongs ? 'Carregando...' : 
-                   likedSongsError ? 'Erro ao carregar' : 
-                   `${likedSongsCount} músicas`}
+                               {isLoadingLikedSongs ? 'Carregando...' : 
+              likedSongsError?.response?.status === 403 ? 'Faça login novamente' : 
+              likedSongsError ? 'Erro ao carregar' : 
+              likedSongsCount > 0 ? `${likedSongsCount} músicas` : 'Nenhuma música curtida'}
                 </p>
               </div>
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-4">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleLikedSongsPlay();
-                  }}
-                  className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform"
-                >
-                  <PlayIcon size={16} className="text-black ml-0.5" />
-                </button>
-              </div>
+              {!likedSongsError && likedSongsCount > 0 && (
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-4">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLikedSongsPlay();
+                    }}
+                    className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+                  >
+                    <PlayIcon size={16} className="text-black ml-0.5" />
+                  </button>
+                </div>
+              )}
             </div>
-          )}
 
           {/* User Playlists */}
           {quickAccessPlaylists.map((playlist: any) => (

@@ -30,7 +30,7 @@ const ArtistAlbum = ({ name, imageUrl, releaseDate, albumType, onClick, onPlay, 
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    console.log('🎵 Botão de play clicado no álbum:', { name, albumId, hasOnPlay: !!onPlay });
+
     if (onPlay) {
       onPlay();
     } else {

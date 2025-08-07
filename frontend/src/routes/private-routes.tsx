@@ -4,14 +4,14 @@ import { Sidebar } from '../components/Sidebar';
 import { MobileHeader } from '../components/MobileHeader';
 import { BottomNavigation } from '../components/BottomNavigation';
 
-import Artistas from "../pages/private/artists";
 import Home from "../pages/private/home";
-import ArtistaDetalhes from "../pages/private/artists-details";
-import Playlists from "../pages/private/playlist";
 import Perfil from "../pages/private/profile";
-import AlbumDetalhes from "../pages/private/album-details";
-import PlaylistDetalhes from "../pages/private/playlist-details";
+import Artistas from "../pages/private/artists";
+import Playlists from "../pages/private/playlist";
 import UserProfile from "../pages/private/user-profile";
+import AlbumDetalhes from "../pages/private/album-details";
+import ArtistaDetalhes from "../pages/private/artists-details";
+import PlaylistDetalhes from "../pages/private/playlist-details";
 
 interface ProtectedRouteConfig {
     path: string;
@@ -24,6 +24,7 @@ export const privateRoutes: ProtectedRouteConfig[] = [
     { path: '/artist/:artistId', component: ArtistaDetalhes },
     { path: '/album/:albumId', component: AlbumDetalhes },
     { path: '/playlists', component: Playlists },
+    { path: '/playlists/liked-songs', component: Playlists },
     { path: '/playlist/:playlistId', component: PlaylistDetalhes },
     { path: '/profile', component: Perfil },
     { path: '/user/:userId', component: UserProfile },

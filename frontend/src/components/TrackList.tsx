@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { InfiniteScrollList } from './InfiniteScrollList';
 import { usePlayer } from '../providers/player-provider';
 import { useLikedTracks } from '../providers/liked-tracks-provider';
+import { useAddToLikedSongs, useRemoveFromLikedSongs } from '../hooks/useLikedSongs';
 import { AddToPlaylistModal } from './AddToPlaylistModal';
 import { PlayIcon, PauseIcon, HeartIcon, PlusIcon, MoreIcon, PlayingIcon, TimeIcon } from './SpotifyIcons';
 
@@ -36,13 +37,24 @@ interface TrackListProps {
 }
 
 const formatDuration = (ms: number) => {
+  if (!ms || isNaN(ms)) {
+    return '0:00';
+  }
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 };
 
 const formatAddedDate = (dateString: string) => {
+  if (!dateString) {
+    return 'Data desconhecida';
+  }
+  
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    return 'Data inválida';
+  }
+  
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - date.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -73,39 +85,54 @@ export const TrackList = ({
 }: TrackListProps) => {
   const navigate = useNavigate();
   const { playTrack, currentTrack, isPlaying } = usePlayer();
-  const { isTrackLiked, toggleLikeTrack } = useLikedTracks();
+  const { isTrackLiked } = useLikedTracks();
+  const addToLikedSongs = useAddToLikedSongs();
+  const removeFromLikedSongs = useRemoveFromLikedSongs();
   const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
   const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
   
   const allTracks = useMemo(() => {
     if (isPlaylist) {
-      return data?.pages.flatMap(page => 
+      const tracks = data?.pages.flatMap(page => 
         page.items.map((item: any) => ({
           ...item.track,
           added_at: item.added_at
         })).filter(Boolean)
       ) || [];
+      return tracks;
     }
-    return data?.pages.flatMap(page => page.items) || [];
+    
+    // Para álbuns/artistas, os dados vêm diretamente como tracks
+    const tracks = data?.pages.flatMap(page => page.items) || [];
+    
+    // Verificar se os tracks têm a estrutura correta
+    const validTracks = tracks.filter(track => {
+      if (!track || !track.id || !track.name) {
+        return false;
+      }
+      return true;
+    });
+    
+    return validTracks;
   }, [data, isPlaylist]);
 
   const handlePlayTrack = (track: Track) => {
     // Fallback para gerar URI se não estiver presente
     const trackUri = track.uri || `spotify:track:${track.id}`;
-    
-    console.log('🎵 Clicou para tocar música:', { 
-      trackName: track.name, 
-      trackId: track.id,
-      uri: trackUri, 
-      originalUri: track.uri,
-      contextUri 
-    });
     playTrack(trackUri, contextUri);
   };
 
   const handleLikeTrack = (trackId: string) => {
-    toggleLikeTrack(trackId);
+    const isLiked = isTrackLiked(trackId);
+    
+    if (isLiked) {
+      // Remover dos favoritos
+      removeFromLikedSongs.mutate([trackId]);
+    } else {
+      // Adicionar aos favoritos
+      addToLikedSongs.mutate([trackId]);
+    }
   };
 
   const handleAddToPlaylist = (track: Track) => {
@@ -121,6 +148,14 @@ export const TrackList = ({
   const isCurrentTrackPlaying = (track: Track) => isCurrentTrack(track) && isPlaying;
 
   const renderTrackItem = (track: Track, index: number) => {
+    // Verificar se o track tem dados válidos
+    if (!track || !track.id || !track.name) {
+      console.warn('🎵 TrackList - Track inválido:', track);
+      return null;
+    }
+    
+
+    
     // Para playlists, usar numeração sequencial global; para álbuns, usar track_number se disponível
     const trackNumber = isPlaylist ? index + 1 : (track.track_number || index + 1);
     
@@ -160,7 +195,7 @@ export const TrackList = ({
           <h4 className={`font-normal text-sm truncate ${
             isCurrentTrack(track) ? 'text-green-500' : 'text-white'
           }`}>
-            {track.name}
+            {track.name || 'Música sem nome'}
           </h4>
           {track.explicit && (
             <span className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded text-[10px] font-bold">
@@ -178,29 +213,29 @@ export const TrackList = ({
                   handleArtistClick(artist.uri?.split(':')[2] || '');
                 }}
               >
-                {artist.name}
+                {artist.name || 'Artista desconhecido'}
               </span>
-              {index < track.artists.length - 1 && ', '}
+              {index < (track.artists?.length || 0) - 1 && ', '}
             </span>
-          ))}
+          )) || 'Artista desconhecido'}
         </div>
       </div>
 
       {/* Album Info (only for playlists) */}
       {isPlaylist && (
         <div className="w-48 mr-4 min-w-0">
-          <div className="text-gray-400 text-sm truncate hover:underline hover:text-white cursor-pointer">
-            {track.album?.name || 'N/A'}
-          </div>
+                  <div className="text-gray-400 text-sm truncate hover:underline hover:text-white cursor-pointer">
+          {track.album?.name || 'Álbum desconhecido'}
+        </div>
         </div>
       )}
 
       {/* Added Date (only for playlists) */}
       {isPlaylist && (
         <div className="w-32 mr-4">
-          <div className="text-gray-400 text-sm">
-            {(track as any).added_at ? formatAddedDate((track as any).added_at) : 'N/A'}
-          </div>
+                  <div className="text-gray-400 text-sm">
+          {(track as any).added_at ? formatAddedDate((track as any).added_at) : 'Data desconhecida'}
+        </div>
         </div>
       )}
       
@@ -224,7 +259,7 @@ export const TrackList = ({
       {/* Duration */}
       <div className="w-16 text-right pr-2">
         <span className="text-gray-400 text-sm font-normal">
-          {formatDuration(track.duration_ms)}
+          {formatDuration(track.duration_ms || 0)}
         </span>
       </div>
     </div>

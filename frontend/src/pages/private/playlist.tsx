@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { CustomButton } from '../../components/CustomButton';
 import { Modal } from '../../components/CustomModal';
@@ -7,12 +7,17 @@ import { PageHeader } from '../../components/layout/PageHeader';
 import { PageWithQueryState } from '../../components/PageWithQueryState';
 import { InfiniteScrollList } from '../../components/InfiniteScrollList';
 import { useUserPlaylists } from '../../hooks/useUserPlaylists';
+import { useLikedSongs } from '../../hooks/useLikedSongs';
+import { useUserProfile } from '../../hooks/useUserProfile';
 import { usePlayer } from '../../providers/player-provider';
 import PlaylistItem from '../../components/PlaylistItem';
+import { HeartIcon } from '../../components/SpotifyIcons';
+import { TrackList } from '../../components/TrackList';
 
 const Playlists = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { playTrack } = usePlayer();
   const { 
     data, 
@@ -22,10 +27,23 @@ const Playlists = () => {
     hasNextPage, 
     isFetchingNextPage 
   } = useUserPlaylists();
+  const { 
+    data: likedSongsData, 
+    isLoading: isLoadingLikedSongs, 
+    error: likedSongsError,
+    fetchNextPage: fetchNextLikedSongs,
+    hasNextPage: hasNextLikedSongs,
+    isFetchingNextPage: isFetchingNextLikedSongs
+  } = useLikedSongs();
+  const { data: userProfile } = useUserProfile();
+
+  const isLikedSongsPage = location.pathname === '/playlists/liked-songs';
 
   const allPlaylists = useMemo(() => {
     return data?.pages.flatMap(page => page.items) || [];
   }, [data]);
+
+  const likedSongsCount = likedSongsData?.pages[0]?.total || 0;
 
   const handleCreatePlaylist = () => {
     setIsModalOpen(true);
@@ -41,11 +59,25 @@ const Playlists = () => {
 
   const handlePlaylistPlay = (playlistId: string) => {
     const contextUri = `spotify:playlist:${playlistId}`;
-    console.log('🎵 Tentando tocar playlist:', { playlistId, contextUri });
     playTrack('', contextUri);
   };
 
-  const pageHeader = (
+  const handleLikedSongsClick = () => {
+    // Navegar para a página de liked songs como playlist especial
+    navigate('/playlists/liked-songs');
+  };
+
+  const handleLikedSongsPlay = () => {
+    const contextUri = 'spotify:user:collection:tracks';
+    playTrack('', contextUri);
+  };
+
+  const pageHeader = isLikedSongsPage ? (
+    <PageHeader
+      title="Músicas Curtidas"
+      subtitle="Suas músicas favoritas"
+    />
+  ) : (
     <PageHeader
       title="Minhas Playlists"
       subtitle="Sua coleção pessoal de playlists"
@@ -59,6 +91,83 @@ const Playlists = () => {
     </PageHeader>
   );
 
+  // Se estamos na página de liked songs, renderizar o conteúdo de liked songs
+  if (isLikedSongsPage) {
+    if (isLoadingLikedSongs || likedSongsError) {
+      return (
+        <PageWithQueryState
+          isLoading={isLoadingLikedSongs}
+          error={likedSongsError}
+          loadingMessage="Carregando músicas curtidas..."
+          errorMessage="Erro ao carregar músicas curtidas. Tente novamente."
+          headerContent={pageHeader}
+        />
+      );
+    }
+
+    const likedSongsCount = likedSongsData?.pages[0]?.total || 0;
+
+    return (
+      <div className="w-full p-6">
+        {pageHeader}
+
+        {/* Playlist Header - Similar ao template de playlist */}
+        <div className="flex items-end space-x-6 mb-8">
+          {/* Playlist Image */}
+          <div className="w-48 h-48 bg-gradient-to-br from-purple-400 to-white flex items-center justify-center rounded-lg shadow-lg">
+            <HeartIcon size={80} className="text-white" filled />
+          </div>
+
+          {/* Playlist Info */}
+          <div className="flex-1">
+            <div className="mb-4">
+              <h1 className="text-4xl font-bold text-white-text mb-2">Músicas Curtidas</h1>
+                             <div className="flex items-center space-x-2 text-gray-400">
+                 {userProfile?.images?.[0]?.url ? (
+                   <img 
+                     src={userProfile.images[0].url} 
+                     alt={userProfile.display_name || 'Usuário'}
+                     className="w-6 h-6 rounded-full object-cover"
+                   />
+                 ) : (
+                   <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center">
+                     <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                       <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z"/>
+                     </svg>
+                   </div>
+                 )}
+                 <span className="text-sm">{userProfile?.display_name || 'Você'}</span>
+                 <span className="text-sm">•</span>
+                 <span className="text-sm">{likedSongsCount} músicas</span>
+               </div>
+            </div>
+
+            {/* Play Button */}
+            <button
+              onClick={handleLikedSongsPlay}
+              className="px-8 py-3 bg-green-spotify hover:bg-green-600 text-black font-bold rounded-full transition-colors flex items-center space-x-2"
+            >
+              <svg width="20" height="20" viewBox="0 0 16 16" fill="black">
+                <path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.287V1.713z"/>
+              </svg>
+              <span>Tocar</span>
+            </button>
+          </div>
+        </div>
+
+        <TrackList
+          data={likedSongsData}
+          hasNextPage={hasNextLikedSongs}
+          isFetchingNextPage={isFetchingNextLikedSongs}
+          fetchNextPage={fetchNextLikedSongs}
+          isPlaylist={true}
+          contextUri="spotify:user:collection:tracks"
+        />
+      </div>
+    );
+  }
+
+  // Página normal de playlists
   if (isLoading || error) {
     return (
       <PageWithQueryState
@@ -86,6 +195,43 @@ const Playlists = () => {
     <div className="w-full p-6">
       {pageHeader}
 
+      {/* Liked Songs Playlist - Always First */}
+      <div className="mb-6">
+        <div
+          className="group flex items-center bg-gradient-to-r from-purple-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 p-4"
+          onClick={handleLikedSongsClick}
+        >
+          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-white flex items-center justify-center rounded-lg mr-4">
+            <HeartIcon size={32} className="text-white" filled />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-white font-medium text-lg">Músicas Curtidas</h3>
+            <p className="text-gray-200 text-sm">
+              {isLoadingLikedSongs ? 'Carregando...' : 
+               likedSongsError?.response?.status === 403 ? 'Não disponível' : 
+               likedSongsError ? 'Erro ao carregar' : 
+               likedSongsCount > 0 ? `${likedSongsCount} músicas` : 'Nenhuma música curtida'}
+            </p>
+          </div>
+          {!likedSongsError && likedSongsCount > 0 && (
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLikedSongsPlay();
+                }}
+                className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="black" className="ml-0.5">
+                  <path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.287V1.713z"/>
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* User Playlists */}
       <InfiniteScrollList
         items={allPlaylists}
         renderItem={renderPlaylistItem}
