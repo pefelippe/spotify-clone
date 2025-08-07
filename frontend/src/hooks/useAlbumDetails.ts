@@ -25,7 +25,7 @@ export const useAlbumTracks = (albumId: string) => {
     refetchOnWindowFocus: false,
     getNextPageParam: (lastPage, allPages) => {
       if (lastPage.next) {
-        return allPages.length * 50; // offset for next page
+        return allPages.length * 50;
       }
       return undefined;
     },

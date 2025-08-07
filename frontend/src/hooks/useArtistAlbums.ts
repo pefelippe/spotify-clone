@@ -2,7 +2,6 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { fetchArtistAlbums } from '../api/queries/artist-albums';
 import { useAuth } from '../providers/auth-provider';
 
-// Hook para buscar todos os lançamentos (exceto colaborações)
 export const useArtistDiscography = (artistId: string) => {
   const { accessToken } = useAuth();
 

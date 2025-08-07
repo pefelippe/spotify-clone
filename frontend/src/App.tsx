@@ -10,21 +10,23 @@ import { PublicRoutes } from './routes/public-routes';
 function App() {
   const { isAuthenticated } = useAuth();
   
-  if (isAuthenticated) {
-    return (
-      <LikedTracksProvider>
-        <PlayerProvider>
-          <div className="min-h-screen" style={{ backgroundColor: '#090707' }}>
-            <PrivateRoutes />
-            <MusicPlayer />
-            <PremiumWarning />
-          </div>
-        </PlayerProvider>
-      </LikedTracksProvider>
-    );
+  // Se não está autenticado, mostrar rotas públicas (que incluem redirecionamento para login)
+  if (!isAuthenticated) {
+    return <PublicRoutes />;
   }
   
-  return <PublicRoutes />;
+  // Se está autenticado, mostrar rotas privadas
+  return (
+    <LikedTracksProvider>
+      <PlayerProvider>
+        <div className="min-h-screen" style={{ backgroundColor: '#090707' }}>
+          <PrivateRoutes />
+          <MusicPlayer />
+          <PremiumWarning />
+        </div>
+      </PlayerProvider>
+    </LikedTracksProvider>
+  );
 }
 
 export default App;

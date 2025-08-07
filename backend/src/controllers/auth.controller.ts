@@ -21,7 +21,6 @@ const SCOPES = [
 ].join(' ')
 
 export const login = (_: Request, res: Response) => {
-  console.log('Auth login requested')
   
   const query = buildQueryString({
     client_id: CLIENT_ID,
@@ -34,28 +33,22 @@ export const login = (_: Request, res: Response) => {
   res.redirect(spotifyUrl)
 }
 
-export const callback = async (req: Request, res: Response) => {
-  console.log('Auth callback received')
-  
+export const callback = async (req: Request, res: Response) => {  
   const code = req.query.code as string
   const error = req.query.error as string
   
   if (error) {
-    console.log('Spotify error:', error)
     return res.status(400).json({ error: `Spotify error: ${error}` })
   }
   
   if (!code) {
-    console.log('Missing authorization code')
     return res.status(400).json({ error: 'Missing code' })
   }
 
   try {
     const data = await getToken(code)
-    console.log('Token exchange successful')
     res.json(data)
   } catch (err: any) {
-    console.error('Token exchange failed:', err.message)
     res.status(500).json({ error: 'Failed to exchange token' })
   }
 }
@@ -63,16 +56,13 @@ export const callback = async (req: Request, res: Response) => {
 export const refreshToken = async (req: Request, res: Response) => {
   const { refresh_token } = req.body
   if (!refresh_token) {
-    console.log('Missing refresh_token')
     return res.status(400).json({ error: 'Missing refresh_token' })
   }
 
   try {
     const data = await getRefreshToken(refresh_token)
-    console.log('Token refresh successful')
     res.json(data)
   } catch (err: any) {
-    console.error('Token refresh failed:', err.message)
     res.status(500).json({ error: 'Failed to refresh token' })
   }
 }

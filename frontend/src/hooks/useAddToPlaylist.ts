@@ -14,19 +14,9 @@ export const useAddToPlaylist = () => {
       return addTrackToPlaylist(playlistId, trackUri, accessToken);
     },
     onSuccess: (_, variables) => {
-      // Invalidate playlist tracks to refresh the list
       queryClient.invalidateQueries({
         queryKey: ['playlistTracks', variables.playlistId]
       });
-      
-      // Música adicionada com sucesso
-    },
-    onError: (error: any) => {
-      console.error('❌ Erro ao adicionar música à playlist:', error);
-      
-      if (error.response?.status === 403) {
-        console.error('❌ Você não tem permissão para modificar esta playlist');
-      }
     },
   });
 };

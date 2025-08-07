@@ -7,6 +7,7 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { setSpotifyToken } from '../api/spotify'
+import api from '../api/spotify'
 import axios from 'axios'
 
 interface AuthContextData {
@@ -49,6 +50,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = () => {
     sessionStorage.removeItem('spotify_token')
     setAccessToken(null)
+    // Remover o token do axios
+    delete api.defaults.headers.common['Authorization']
     navigate('/login')
   }
 
@@ -63,6 +66,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = (): AuthContextData => {
   const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth deve estar dentro de AuthProvider')
+  if (!context) {
+    throw new Error('useAuth deve estar dentro de AuthProvider')
+  }
   return context
 }

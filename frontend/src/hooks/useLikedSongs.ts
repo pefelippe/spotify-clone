@@ -19,7 +19,6 @@ export const useLikedSongs = () => {
     },
     initialPageParam: 0,
     retry: (failureCount, error: any) => {
-      // Não tentar novamente para erros 403 (sem permissão)
       if (error?.response?.status === 403) {
         return false;
       }
@@ -35,11 +34,7 @@ export const useAddToLikedSongs = () => {
   return useMutation({
     mutationFn: (trackIds: string[]) => addToLikedSongs(accessToken!, trackIds),
     onSuccess: () => {
-      // Invalidar e refazer a query de liked songs
       queryClient.invalidateQueries({ queryKey: ['likedSongs'] });
-    },
-    onError: (error: any) => {
-      console.error('❌ Erro ao adicionar músicas aos favoritos:', error);
     },
   });
 };
@@ -51,11 +46,7 @@ export const useRemoveFromLikedSongs = () => {
   return useMutation({
     mutationFn: (trackIds: string[]) => removeFromLikedSongs(accessToken!, trackIds),
     onSuccess: () => {
-      // Invalidar e refazer a query de liked songs
       queryClient.invalidateQueries({ queryKey: ['likedSongs'] });
-    },
-    onError: (error: any) => {
-      console.error('❌ Erro ao remover músicas dos favoritos:', error);
     },
   });
 };

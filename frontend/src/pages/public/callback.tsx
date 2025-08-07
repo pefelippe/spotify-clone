@@ -7,7 +7,9 @@ export const Callback = () => {
   const hasAuthenticated = useRef(false)
 
   useEffect(() => {
-    if (hasAuthenticated.current) return
+    if (hasAuthenticated.current) {
+      return
+    }
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
     if (code) {

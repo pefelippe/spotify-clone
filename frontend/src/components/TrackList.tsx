@@ -103,10 +103,8 @@ export const TrackList = ({
       return tracks;
     }
     
-    // Para álbuns/artistas, os dados vêm diretamente como tracks
     const tracks = data?.pages.flatMap(page => page.items) || [];
     
-    // Verificar se os tracks têm a estrutura correta
     const validTracks = tracks.filter(track => {
       if (!track || !track.id || !track.name) {
         return false;
@@ -118,7 +116,6 @@ export const TrackList = ({
   }, [data, isPlaylist]);
 
   const handlePlayTrack = (track: Track) => {
-    // Fallback para gerar URI se não estiver presente
     const trackUri = track.uri || `spotify:track:${track.id}`;
     playTrack(trackUri, contextUri);
   };
@@ -127,10 +124,8 @@ export const TrackList = ({
     const isLiked = isTrackLiked(trackId);
     
     if (isLiked) {
-      // Remover dos favoritos
       removeFromLikedSongs.mutate([trackId]);
     } else {
-      // Adicionar aos favoritos
       addToLikedSongs.mutate([trackId]);
     }
   };
@@ -148,127 +143,115 @@ export const TrackList = ({
   const isCurrentTrackPlaying = (track: Track) => isCurrentTrack(track) && isPlaying;
 
   const renderTrackItem = (track: Track, index: number) => {
-    // Verificar se o track tem dados válidos
     if (!track || !track.id || !track.name) {
-      console.warn('🎵 TrackList - Track inválido:', track);
       return null;
     }
     
-
-    
-    // Para playlists, usar numeração sequencial global; para álbuns, usar track_number se disponível
     const trackNumber = isPlaylist ? index + 1 : (track.track_number || index + 1);
     
     return (
-    <div 
-      className="flex items-center px-4 py-2 rounded-md hover:bg-gray-800 hover:bg-opacity-50 group cursor-pointer"
-      onMouseEnter={() => setHoveredTrack(track.id)}
-      onMouseLeave={() => setHoveredTrack(null)}
-    >
-      {/* Track Number / Play Button */}
-      <div className="w-4 mr-4 flex justify-center">
-        {isCurrentTrackPlaying(track) ? (
-          <div className="text-green-500">
-            <PlayingIcon size={14} />
-          </div>
-        ) : isCurrentTrack(track) ? (
-          <div className="text-green-500">
-            <PlayIcon size={14} />
-          </div>
-        ) : hoveredTrack === track.id ? (
-          <button 
-            className="text-white hover:text-green-500 cursor-pointer"
-            onClick={() => handlePlayTrack(track)}
-          >
-            <PlayIcon size={14} />
-          </button>
-        ) : (
-          <span className="text-gray-400 text-sm font-medium">
-            {trackNumber}
-          </span>
-        )}
-      </div>
-      
-      {/* Track Info */}
-      <div className="flex-1 min-w-0 mr-4">
-        <div className="flex items-center space-x-2">
-          <h4 className={`font-normal text-sm truncate ${
-            isCurrentTrack(track) ? 'text-green-500' : 'text-white'
-          }`}>
-            {track.name || 'Música sem nome'}
-          </h4>
-          {track.explicit && (
-            <span className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded text-[10px] font-bold">
-              E
+      <div 
+        className="flex items-center px-4 py-2 rounded-md hover:bg-gray-800 hover:bg-opacity-50 group cursor-pointer"
+        onMouseEnter={() => setHoveredTrack(track.id)}
+        onMouseLeave={() => setHoveredTrack(null)}
+      >
+        <div className="w-4 mr-4 flex justify-center">
+          {isCurrentTrackPlaying(track) ? (
+            <div className="text-green-500">
+              <PlayingIcon size={14} />
+            </div>
+          ) : isCurrentTrack(track) ? (
+            <div className="text-green-500">
+              <PlayIcon size={14} />
+            </div>
+          ) : hoveredTrack === track.id ? (
+            <button 
+              className="text-white hover:text-green-500 cursor-pointer"
+              onClick={() => handlePlayTrack(track)}
+            >
+              <PlayIcon size={14} />
+            </button>
+          ) : (
+            <span className="text-gray-400 text-sm font-medium">
+              {trackNumber}
             </span>
           )}
         </div>
-        <div className="text-gray-400 text-sm truncate">
-          {track.artists?.map((artist, index) => (
-            <span key={artist.uri || index}>
-              <span
-                className="hover:underline hover:text-white cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleArtistClick(artist.uri?.split(':')[2] || '');
-                }}
-              >
-                {artist.name || 'Artista desconhecido'}
+        
+        <div className="flex-1 min-w-0 mr-4">
+          <div className="flex items-center space-x-2">
+            <h4 className={`font-normal text-sm truncate ${
+              isCurrentTrack(track) ? 'text-green-500' : 'text-white'
+            }`}>
+              {track.name || 'Música sem nome'}
+            </h4>
+            {track.explicit && (
+              <span className="bg-gray-500 text-white text-xs px-1.5 py-0.5 rounded text-[10px] font-bold">
+                E
               </span>
-              {index < (track.artists?.length || 0) - 1 && ', '}
-            </span>
-          )) || 'Artista desconhecido'}
+            )}
+          </div>
+          <div className="text-gray-400 text-sm truncate">
+            {track.artists?.map((artist, index) => (
+              <span key={artist.uri || index}>
+                <span
+                  className="hover:underline hover:text-white cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleArtistClick(artist.uri?.split(':')[2] || '');
+                  }}
+                >
+                  {artist.name || 'Artista desconhecido'}
+                </span>
+                {index < (track.artists?.length || 0) - 1 && ', '}
+              </span>
+            )) || 'Artista desconhecido'}
+          </div>
         </div>
-      </div>
 
-      {/* Album Info (only for playlists) */}
-      {isPlaylist && (
-        <div className="w-48 mr-4 min-w-0">
-                  <div className="text-gray-400 text-sm truncate hover:underline hover:text-white cursor-pointer">
-          {track.album?.name || 'Álbum desconhecido'}
-        </div>
-        </div>
-      )}
+        {isPlaylist && (
+          <div className="w-48 mr-4 min-w-0">
+            <div className="text-gray-400 text-sm truncate hover:underline hover:text-white cursor-pointer">
+              {track.album?.name || 'Álbum desconhecido'}
+            </div>
+          </div>
+        )}
 
-      {/* Added Date (only for playlists) */}
-      {isPlaylist && (
-        <div className="w-32 mr-4">
-                  <div className="text-gray-400 text-sm">
-          {(track as any).added_at ? formatAddedDate((track as any).added_at) : 'Data desconhecida'}
+        {isPlaylist && (
+          <div className="w-32 mr-4">
+            <div className="text-gray-400 text-sm">
+              {(track as any).added_at ? formatAddedDate((track as any).added_at) : 'Data desconhecida'}
+            </div>
+          </div>
+        )}
+        
+        <div className="w-8 flex justify-center mr-4">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLikeTrack(track.id);
+            }}
+            className={`p-1 rounded-full cursor-pointer ${
+              isTrackLiked(track.id)
+                ? 'text-green-500 opacity-100'
+                : 'text-gray-400 opacity-0 group-hover:opacity-100 hover:text-green-500'
+            }`}
+          >
+            <HeartIcon size={16} filled={isTrackLiked(track.id)} />
+          </button>
         </div>
+        
+        <div className="w-16 text-right pr-2">
+          <span className="text-gray-400 text-sm font-normal">
+            {formatDuration(track.duration_ms || 0)}
+          </span>
         </div>
-      )}
-      
-      {/* Action Buttons */}
-      <div className="w-8 flex justify-center mr-4">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            handleLikeTrack(track.id);
-          }}
-          className={`p-1 rounded-full cursor-pointer ${
-            isTrackLiked(track.id)
-              ? 'text-green-500 opacity-100'
-              : 'text-gray-400 opacity-0 group-hover:opacity-100 hover:text-green-500'
-          }`}
-        >
-          <HeartIcon size={16} filled={isTrackLiked(track.id)} />
-        </button>
       </div>
-      
-      {/* Duration */}
-      <div className="w-16 text-right pr-2">
-        <span className="text-gray-400 text-sm font-normal">
-          {formatDuration(track.duration_ms || 0)}
-        </span>
-      </div>
-    </div>
     );
   };
 
   return (
     <div>
-      {/* Table Header */}
       <div className="flex items-center px-4 py-2 border-b border-gray-800 text-gray-400 text-sm font-normal mb-4">
         <div className="w-4 mr-4 text-center">#</div>
         <div className="flex-1 mr-4">Título</div>
@@ -278,7 +261,6 @@ export const TrackList = ({
             <div className="w-32 mr-4">Adicionado em</div>
           </>
         )}
-        {/* Space for action buttons (heart icon) */}
         <div className="w-8 mr-4"></div>
         <div className="w-16 flex justify-end pr-2">
           <TimeIcon size={16} className="opacity-50" />
@@ -299,7 +281,6 @@ export const TrackList = ({
         }
       />
 
-      {/* Add to Playlist Modal */}
       <AddToPlaylistModal
         isOpen={showAddToPlaylistModal}
         onClose={() => {

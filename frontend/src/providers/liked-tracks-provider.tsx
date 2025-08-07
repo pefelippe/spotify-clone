@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useLikedSongs } from '../hooks/useLikedSongs';
 
 interface LikedTracksContextData {
@@ -15,7 +15,6 @@ export const LikedTracksProvider = ({ children }: { children: ReactNode }) => {
   const [likedTracks, setLikedTracks] = useState<Set<string>>(new Set());
   const { data: likedSongsData } = useLikedSongs();
 
-  // Sincronizar com os dados da API do Spotify
   useEffect(() => {
     if (likedSongsData) {
       const trackIds = new Set<string>();
