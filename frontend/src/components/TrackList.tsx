@@ -114,7 +114,7 @@ export const TrackList = ({
   };
 
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artista/${artistId}`);
+    navigate(`/artist/${artistId}`);
   };
 
   const isCurrentTrack = (track: Track) => currentTrack?.id === track.id;

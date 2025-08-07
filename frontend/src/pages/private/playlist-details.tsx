@@ -24,7 +24,7 @@ const PlaylistDetalhes = () => {
 
   if (!playlistId) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName="Playlist não encontrada" />
           <h1 className="text-2xl font-bold text-white-text">Playlist não encontrada</h1>
@@ -35,7 +35,7 @@ const PlaylistDetalhes = () => {
 
   if (isLoadingDetails || detailsError) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName={isLoadingDetails ? "Carregando..." : "Erro"} />
           <h1 className="text-2xl font-bold text-white-text">
@@ -83,7 +83,7 @@ const PlaylistDetalhes = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       <div className="flex items-center space-x-4 mb-8">
         <BackButton artistName={playlistDetails.name} />
       </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './auth-provider';
 
 interface PlayerContextData {
@@ -127,9 +127,26 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    const body = contextUri 
-      ? { context_uri: contextUri, offset: { uri } }
-      : { uris: [uri] };
+    let body: any;
+    
+    if (contextUri) {
+      // Check if the context is an artist - artists don't support offset
+      if (contextUri.startsWith('spotify:artist:')) {
+        // For artist context, we can't use offset, so just play from the artist
+        body = { context_uri: contextUri };
+        console.log('🎵 Contexto de artista detectado - não usando offset');
+      } else if (!uri || uri.trim() === '') {
+        // If URI is empty or not provided, play the entire context from the beginning
+        body = { context_uri: contextUri };
+        console.log('🎵 URI vazio detectado - tocando contexto inteiro do início');
+      } else {
+        // For other contexts (album, playlist) with specific track, use offset
+        body = { context_uri: contextUri, offset: { uri } };
+      }
+    } else {
+      // No context, just play the single track
+      body = { uris: [uri] };
+    }
 
     console.log('🎵 Enviando request para Spotify API:', body);
 

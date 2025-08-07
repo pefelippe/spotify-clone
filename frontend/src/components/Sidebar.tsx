@@ -7,9 +7,9 @@ import { usePWA } from '../hooks/usePWA';
 
 export const SidebarItems = [
   { name: 'Home', path: '/', icon: HomeIcon },
-  { name: 'Artistas', path: '/artistas', icon: ArtistIcon },
+  { name: 'Artistas', path: '/artists', icon: ArtistIcon },
   { name: 'Playlists', path: '/playlists', icon: PlaylistIcon },
-  { name: 'Perfil', path: '/perfil', icon: UserIcon },
+  { name: 'Perfil', path: '/profile', icon: UserIcon },
 ];
 
 export const Sidebar = () => {

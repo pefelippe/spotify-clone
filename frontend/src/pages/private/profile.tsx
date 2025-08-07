@@ -1,64 +1,40 @@
 
 
 import { CustomButton } from '../../components/CustomButton';
-import { CenteredLayout } from '../../components/layout/CenteredLayout';
-import { QueryState } from '../../components/QueryState';
 import { useUserProfile } from '../../hooks/useUserProfile';
 import { useAuth } from '../../providers/auth-provider';
 
 const Perfil = () => {
   const { logout } = useAuth();
-  const { data: userProfile, isLoading, error } = useUserProfile();
+  const { data: userProfile, isLoading } = useUserProfile();
 
-  const queryStateResult = (
-    <CenteredLayout>
-      <div className="text-center">
-        <QueryState
-          isLoading={isLoading}
-          error={error}
-          loadingMessage="Carregando perfil..."
-          errorMessage="Erro ao carregar perfil. Tente novamente."
-        >
-          <CustomButton
-            label="Sair"
-            onClick={logout}
-            variant="primary"
-            customClassName="bg-green-spotify hover:bg-green-600 w-full"
-          />
-        </QueryState>
-      </div>
-    </CenteredLayout>
-  );
-
-  if (isLoading || error) {
-    return queryStateResult;
+  if (isLoading) {
+    return <p>Carregando...</p>;
   }
 
   return (
-    <CenteredLayout>
+    <div className="min-h-screen flex items-center justify-center pb-32">
       <div className="text-center">
-        <div className="mb-6">
+        <div className="mb-8">
           <img
             src={userProfile?.images?.[0]?.url || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'}
             alt={userProfile?.display_name || 'User'}
-            className="w-32 h-32 rounded-full mx-auto object-cover border-4 border-gray-800"
+            className="w-40 h-40 rounded-full mx-auto object-cover border-4 border-gray-700 shadow-xl"
           />
         </div>
 
-
-          <h1 className="text-3xl font-bold text-white-text mb-6">
-            {userProfile?.display_name || 'Usuário'}
-          </h1>
-
+        <h1 className="text-4xl font-bold text-white mb-8">
+          {userProfile?.display_name || 'Usuário'}
+        </h1>
 
         <CustomButton
           label="Sair"
           onClick={logout}
-          variant="primary"
-          customClassName="bg-green-spotify hover:bg-green-600 w-[300px] mx-auto text-black"
+          variant="spotify"
+          customClassName="w-[280px] mx-auto justify-center"
         />
       </div>
-    </CenteredLayout>
+    </div>
   );
 };
 

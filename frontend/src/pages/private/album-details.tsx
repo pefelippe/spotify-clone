@@ -20,7 +20,7 @@ const AlbumDetalhes = () => {
 
   if (!albumId) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName="Álbum não encontrado" />
           <h1 className="text-2xl font-bold text-white-text">Álbum não encontrado</h1>
@@ -31,7 +31,7 @@ const AlbumDetalhes = () => {
 
   if (isLoadingDetails || detailsError) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName={isLoadingDetails ? "Carregando..." : "Erro"} />
           <h1 className="text-2xl font-bold text-white-text">
@@ -50,7 +50,7 @@ const AlbumDetalhes = () => {
   }
 
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artista/${artistId}`);
+    navigate(`/artist/${artistId}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -83,7 +83,7 @@ const AlbumDetalhes = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       <div className="flex items-center space-x-4 mb-8">
         <BackButton artistName={albumDetails.name} />
       </div>

@@ -20,13 +20,12 @@ const Artistas = () => {
     isFetchingNextPage 
   } = useTopArtists();
 
-  // Always call hooks in the same order - before any conditional returns
   const allArtists = useMemo(() => {
     return data?.pages.flatMap(page => page.items) || [];
   }, [data]);
 
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artista/${artistId}`);
+    navigate(`/artist/${artistId}`);
   };
 
   const pageHeader = (
@@ -51,7 +50,7 @@ const Artistas = () => {
   const renderArtistItem = (artist: any) => (
     <div
       onClick={() => handleArtistClick(artist.id)}
-      className="flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-800 cursor-pointer"
+      className="flex items-center space-x-4 p-2 rounded-lg hover:bg-gray-800 cursor-pointer"
     >
       <Album
         name={artist.name}
@@ -62,15 +61,12 @@ const Artistas = () => {
         <h3 className="text-white-text font-semibold text-lg">
           {artist.name}
         </h3>
-        <p className="text-gray-400 text-sm">
-          {artist.followers?.total ? `${artist.followers.total.toLocaleString()} seguidores` : 'Artista'}
-        </p>
       </div>
     </div>
   );
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       {pageHeader}
 
       <InfiniteScrollList
@@ -79,12 +75,8 @@ const Artistas = () => {
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
-        className="flex flex-col space-y-2"
-        emptyComponent={
-          <div className="text-center py-12 text-gray-400">
-            Nenhum artista encontrado.
-          </div>
-        }
+        className="flex flex-col "
+        emptyComponent={<></>}
       />
     </div>
   );

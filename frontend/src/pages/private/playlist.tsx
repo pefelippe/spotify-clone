@@ -83,7 +83,7 @@ const Playlists = () => {
   );
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       {pageHeader}
 
       <InfiniteScrollList

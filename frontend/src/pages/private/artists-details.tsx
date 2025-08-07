@@ -131,7 +131,7 @@ const ArtistaDetalhes = () => {
 
   if (!artistId) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName="Artista não encontrado" />
           <h1 className="text-2xl font-bold text-white-text">Artista não encontrado</h1>
@@ -151,7 +151,7 @@ const ArtistaDetalhes = () => {
 
   if (isAnyLoading || hasAnyError) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         {backButtonHeader}
         <QueryState
           isLoading={isAnyLoading}
@@ -177,7 +177,7 @@ const ArtistaDetalhes = () => {
   );
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       <div className="flex items-center space-x-4 mb-8">
         <BackButton artistName={artistName} />
       </div>
@@ -217,8 +217,8 @@ const ArtistaDetalhes = () => {
 
       {/* Popular Tracks */}
       {topTracks.length > 0 && (
-        <div className="mb-12">
-          <h3 className="text-xl font-semibold text-white-text mb-6">Populares</h3>
+        <div className="mb-6">
+          <h3 className="text-2xl font-semibold text-white-text mb-6">Musicas Populares</h3>
           <TrackList
             data={{ pages: [{ items: topTracks }] }}
             isPlaylist={false}
@@ -230,7 +230,7 @@ const ArtistaDetalhes = () => {
       {/* Discography with Filters */}
       {allDiscography.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-xl font-semibold text-white-text mb-6">Discografia</h3>
+          <h3 className="text-2xl font-semibold text-white-text mb-6">Discografia</h3>
           
           {/* Filter Tabs */}
           <div className="flex space-x-1 mb-6 bg-gray-800 p-1 rounded-lg w-fit">

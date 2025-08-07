@@ -152,7 +152,7 @@ export const MusicPlayer = () => {
   };
 
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artista/${artistId}`);
+    navigate(`/artist/${artistId}`);
   };
 
   const handlePlayerExpand = () => {
@@ -580,6 +580,20 @@ export const MusicPlayer = () => {
                   style={{ left: `calc(${volume}% - 6px)` }}
                 />
               </div>
+              
+              {/* Fullscreen Icon */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlayerExpand();
+                }}
+                className="text-gray-300 hover:text-white cursor-pointer transition-colors duration-200 p-1 hover:bg-white/10 rounded-full ml-2"
+                title="Expandir player"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                </svg>
+              </button>
             </div>
           </div>
         </div>

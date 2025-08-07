@@ -10,7 +10,7 @@ const UserProfile = () => {
 
   if (!userId) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName="Usuário não encontrado" />
           <h1 className="text-2xl font-bold text-white-text">Usuário não encontrado</h1>
@@ -21,7 +21,7 @@ const UserProfile = () => {
 
   if (isLoading || error) {
     return (
-      <div className="p-6">
+      <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
           <BackButton artistName={isLoading ? "Carregando..." : "Erro"} />
           <h1 className="text-2xl font-bold text-white-text">
@@ -40,7 +40,7 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       <div className="flex items-center space-x-4 mb-8">
         <BackButton artistName={userProfile?.display_name || 'Usuário'} />
       </div>

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTopArtists } from '../../hooks/useTopArtists';
 import { useUserPlaylists } from '../../hooks/useUserPlaylists';
 import { useLikedSongs } from '../../hooks/useLikedSongs';
+import { usePlayer } from '../../providers/player-provider';
 import Album from '../../components/Album';
 import { QueryState } from '../../components/QueryState';
 import { PlayIcon, HeartIcon } from '../../components/SpotifyIcons';
@@ -10,14 +11,25 @@ const Home = () => {
   const navigate = useNavigate();
   const { data: topArtistsData, isLoading: isLoadingArtists, error: artistsError } = useTopArtists();
   const { data: playlistsData, isLoading: isLoadingPlaylists, error: playlistsError } = useUserPlaylists();
-  const { data: likedSongsData } = useLikedSongs();
+  const { data: likedSongsData, isLoading: isLoadingLikedSongs, error: likedSongsError } = useLikedSongs();
+  const { playTrack, isReady, deviceId } = usePlayer();
 
   const topArtists = topArtistsData?.pages[0]?.items?.slice(0, 6) || [];
   const userPlaylists = playlistsData?.pages[0]?.items?.slice(0, 5) || []; // Reduzido para 5 para dar espaço para Liked Songs
   const likedSongsCount = likedSongsData?.pages[0]?.total || 0;
 
+  // Debug log para liked songs
+  console.log('🎵 Liked Songs Debug:', { 
+    likedSongsData, 
+    likedSongsCount, 
+    isLoadingLikedSongs, 
+    likedSongsError,
+    hasData: !!likedSongsData,
+    firstPage: likedSongsData?.pages[0]
+  });
+
   const handleArtistClick = (artistId: string) => {
-    navigate(`/artista/${artistId}`);
+    navigate(`/artist/${artistId}`);
   };
 
   const handlePlaylistClick = (playlistId: string) => {
@@ -25,9 +37,72 @@ const Home = () => {
   };
 
   const handleLikedSongsClick = () => {
+    console.log('🎵 Clicou em Músicas Curtidas');
     // Por enquanto, vamos navegar para a página de playlists
-    // Futuramente pode ser uma página específica para liked songs
+    // TODO: Criar página específica para liked songs (/liked-songs)
     navigate('/playlists');
+  };
+
+  const handlePlaylistPlay = (playlistId: string) => {
+    console.log('🎵 Tentando tocar playlist:', { 
+      playlistId, 
+      deviceId, 
+      isReady,
+      hasPlayTrack: !!playTrack 
+    });
+    
+    if (!isReady) {
+      console.warn('⚠️ Player não está pronto ainda');
+      return;
+    }
+    
+    if (!deviceId) {
+      console.warn('⚠️ Device ID não disponível');
+      return;
+    }
+    
+    const contextUri = `spotify:playlist:${playlistId}`;
+    playTrack('', contextUri);
+  };
+
+  const handleArtistPlay = (artistId: string) => {
+    console.log('🎵 Tentando tocar artista:', { 
+      artistId, 
+      deviceId, 
+      isReady,
+      hasPlayTrack: !!playTrack 
+    });
+    
+    if (!isReady) {
+      console.warn('⚠️ Player não está pronto ainda');
+      return;
+    }
+    
+    if (!deviceId) {
+      console.warn('⚠️ Device ID não disponível');
+      return;
+    }
+    
+    const contextUri = `spotify:artist:${artistId}`;
+    playTrack('', contextUri);
+  };
+
+  const handleLikedSongsPlay = () => {
+    console.log('🎵 Tentando tocar músicas curtidas');
+    
+    if (!isReady) {
+      console.warn('⚠️ Player não está pronto ainda');
+      return;
+    }
+    
+    if (!deviceId) {
+      console.warn('⚠️ Device ID não disponível');
+      return;
+    }
+    
+    // Para liked songs, usamos o endpoint collection
+    const contextUri = 'spotify:user:collection:tracks';
+    playTrack('', contextUri);
   };
 
   // Horário baseado na saudação
@@ -46,7 +121,7 @@ const Home = () => {
   const quickAccessPlaylists = userPlaylists.slice(0, 5);
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="w-full p-6 space-y-8">
       {/* Greeting Header */}
       <div>
         <h1 className="text-3xl lg:text-4xl font-bold text-white mb-8">
@@ -58,7 +133,7 @@ const Home = () => {
       <section>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {/* Liked Songs Card */}
-          {likedSongsCount > 0 && (
+          {(likedSongsCount > 0 || isLoadingLikedSongs || likedSongsError) && (
             <div
               className="group flex items-center bg-gradient-to-r from-purple-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 rounded-lg overflow-hidden cursor-pointer transition-all duration-200"
               onClick={handleLikedSongsClick}
@@ -68,10 +143,20 @@ const Home = () => {
               </div>
               <div className="flex-1 px-4">
                 <h3 className="text-white font-medium">Músicas Curtidas</h3>
-                <p className="text-gray-200 text-sm">{likedSongsCount} músicas</p>
+                <p className="text-gray-200 text-sm">
+                  {isLoadingLikedSongs ? 'Carregando...' : 
+                   likedSongsError ? 'Erro ao carregar' : 
+                   `${likedSongsCount} músicas`}
+                </p>
               </div>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-4">
-                <button className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLikedSongsPlay();
+                  }}
+                  className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+                >
                   <PlayIcon size={16} className="text-black ml-0.5" />
                 </button>
               </div>
@@ -94,7 +179,13 @@ const Home = () => {
                 <h3 className="text-white font-medium truncate">{playlist.name}</h3>
               </div>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-4">
-                <button className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform">
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePlaylistPlay(playlist.id);
+                  }}
+                  className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform"
+                >
                   <PlayIcon size={16} className="text-black ml-0.5" />
                 </button>
               </div>
@@ -108,7 +199,7 @@ const Home = () => {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-white">Seus artistas favoritos</h2>
           <button 
-            onClick={() => navigate('/artistas')}
+            onClick={() => navigate('/artists')}
             className="text-gray-400 hover:text-white text-sm font-medium transition-colors"
           >
             Mostrar todos
@@ -119,11 +210,11 @@ const Home = () => {
           isLoading={isLoadingArtists}
           error={artistsError}
         >
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
             {topArtists.map((artist: any) => (
               <div
                 key={artist.id}
-                className="group flex flex-col items-center space-y-2 cursor-pointer transition-all duration-200 hover:bg-gray-800/50 p-3 rounded-lg"
+                className="group flex flex-col items-center space-y-2 cursor-pointer transition-all duration-200 hover:bg-gray-800/50 p-2 rounded-lg"
                 onClick={() => handleArtistClick(artist.id)}
               >
                 <div className="relative">
@@ -132,11 +223,17 @@ const Home = () => {
                     alt={artist.name}
                     className="w-32 h-32 lg:w-40 lg:h-40 rounded-full object-cover shadow-lg"
                   />
-                  <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <button className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg">
-                      <PlayIcon size={16} className="text-black ml-0.5" />
-                    </button>
-                  </div>
+                                                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                <button 
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleArtistPlay(artist.id);
+                                  }}
+                                  className="w-12 h-12 bg-green-spotify rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-lg"
+                                >
+                                  <PlayIcon size={16} className="text-black ml-0.5" />
+                                </button>
+                              </div>
                 </div>
                 <div className="text-center">
                   <h3 className="text-white font-medium truncate w-full">{artist.name}</h3>
@@ -172,7 +269,7 @@ const Home = () => {
                 imageUrl={playlist.images?.[0]?.url}
                 size="lg"
                 onClick={() => handlePlaylistClick(playlist.id)}
-                onPlay={() => handlePlaylistClick(playlist.id)}
+                onPlay={() => handlePlaylistPlay(playlist.id)}
               />
             ))}
           </div>

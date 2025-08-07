@@ -8,7 +8,7 @@ interface PageHeaderProps {
 
 export const PageHeader = ({ title, subtitle, children }: PageHeaderProps) => {
   return (
-    <div className="mb-8">
+    <div className="my-6 mx-4">
       <h1 className="text-4xl font-bold text-white-text mb-2">
         {title}
       </h1>

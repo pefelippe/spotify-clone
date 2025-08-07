@@ -20,12 +20,12 @@ interface ProtectedRouteConfig {
 
 export const privateRoutes: ProtectedRouteConfig[] = [
     { path: '/', component: Home },
-    { path: '/artistas', component: Artistas },
-    { path: '/artista/:artistId', component: ArtistaDetalhes },
+    { path: '/artists', component: Artistas },
+    { path: '/artist/:artistId', component: ArtistaDetalhes },
     { path: '/album/:albumId', component: AlbumDetalhes },
     { path: '/playlists', component: Playlists },
     { path: '/playlist/:playlistId', component: PlaylistDetalhes },
-    { path: '/perfil', component: Perfil },
+    { path: '/profile', component: Perfil },
     { path: '/user/:userId', component: UserProfile },
   ];
 
@@ -40,7 +40,7 @@ export const PrivateRoutes: React.FC = () => {
             key={path}
             path={path}
             element={
-              <div className="flex-1 lg:ml-[280px] pt-16 lg:pt-0 pb-[164px] lg:pb-20">
+              <div className="flex justify-center flex-1 lg:ml-[280px] pt-16 lg:pt-0 ">
                 <Component />
               </div>
             }
