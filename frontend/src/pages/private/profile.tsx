@@ -31,7 +31,7 @@ const Perfil = () => {
           label="Sair"
           onClick={logout}
           variant="spotify"
-          customClassName="w-[280px] mx-auto justify-center"
+          customClassName="w-[250px] mx-auto justify-center"
         />
       </div>
     </div>

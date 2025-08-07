@@ -188,7 +188,7 @@ export const MusicPlayer = () => {
 
   if (!isReady || !currentTrack) {
     return (
-      <div className="fixed bottom-[72px] lg:bottom-0 left-0 lg:left-[280px] right-0 bg-black border-t border-gray-800 z-50 transform translate-y-full" />
+      <div className="fixed bottom-[72px] lg:bottom-0 left-0 lg:left-[250px] right-0 bg-black border-t border-gray-800 z-50 transform translate-y-full" />
     );
   }
 
@@ -391,7 +391,7 @@ export const MusicPlayer = () => {
   // Player Compacto (Mini Player)
   return (
     <div 
-      className="fixed bottom-[72px] lg:bottom-0 left-0 lg:left-[280px] right-0 border-t border-gray-700/30 z-50 shadow-2xl"
+      className="fixed bottom-[72px] lg:bottom-0 left-0 lg:left-[250px] right-0 border-t border-gray-700/30 z-50 shadow-2xl"
       style={{ backgroundColor: '#000000' }}
       onClick={handlePlayerClick}
     >

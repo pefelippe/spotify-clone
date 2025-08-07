@@ -41,7 +41,7 @@ export const PrivateRoutes: React.FC = () => {
             key={path}
             path={path}
             element={
-              <div className="flex justify-center flex-1 lg:ml-[280px] pt-16 lg:pt-0 ">
+              <div className="flex justify-center flex-1 lg:ml-[250px] pt-16 lg:pt-0 ">
                 <Component />
               </div>
             }
