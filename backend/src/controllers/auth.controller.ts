@@ -21,26 +21,25 @@ const SCOPES = [
 ].join(' ')
 
 export const login = (_: Request, res: Response) => {
-  
   const query = buildQueryString({
     client_id: CLIENT_ID,
     response_type: 'code',
     redirect_uri: REDIRECT_URI,
     scope: SCOPES,
   })
-  
+
   const spotifyUrl = `https://accounts.spotify.com/authorize?${query}`
   res.redirect(spotifyUrl)
 }
 
-export const callback = async (req: Request, res: Response) => {  
+export const callback = async (req: Request, res: Response) => {
   const code = req.query.code as string
   const error = req.query.error as string
-  
+
   if (error) {
     return res.status(400).json({ error: `Spotify error: ${error}` })
   }
-  
+
   if (!code) {
     return res.status(400).json({ error: 'Missing code' })
   }

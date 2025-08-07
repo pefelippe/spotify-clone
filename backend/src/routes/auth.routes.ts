@@ -1,9 +1,5 @@
 import { Router } from 'express'
-import {
-  login,
-  callback,
-  refreshToken,
-} from '../controllers/auth.controller'
+import { login, callback, refreshToken } from '../controllers/auth.controller'
 
 const router = Router()
 
