@@ -46,5 +46,11 @@
     "ts-jest": "^29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "npm run lint:fix",
+      "npm run format"
+    ]
   }
 }
