@@ -49,16 +49,16 @@ const formatAddedDate = (dateString: string) => {
   if (!dateString) {
     return 'Data desconhecida';
   }
-  
+
   const date = new Date(dateString);
   if (isNaN(date.getTime())) {
     return 'Data inválida';
   }
-  
+
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - date.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+
   if (diffDays === 1) {
     return 'há 1 dia';
   } else if (diffDays < 7) {
@@ -91,27 +91,27 @@ export const TrackList = ({
   const [hoveredTrack, setHoveredTrack] = useState<string | null>(null);
   const [showAddToPlaylistModal, setShowAddToPlaylistModal] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null);
-  
+
   const allTracks = useMemo(() => {
     if (isPlaylist) {
-      const tracks = data?.pages.flatMap(page => 
+      const tracks = data?.pages.flatMap(page =>
         page.items.map((item: any) => ({
           ...item.track,
-          added_at: item.added_at
-        })).filter(Boolean)
+          added_at: item.added_at,
+        })).filter(Boolean),
       ) || [];
       return tracks;
     }
-    
+
     const tracks = data?.pages.flatMap(page => page.items) || [];
-    
+
     const validTracks = tracks.filter(track => {
       if (!track || !track.id || !track.name) {
         return false;
       }
       return true;
     });
-    
+
     return validTracks;
   }, [data, isPlaylist]);
 
@@ -122,7 +122,7 @@ export const TrackList = ({
 
   const handleLikeTrack = (trackId: string) => {
     const isLiked = isTrackLiked(trackId);
-    
+
     if (isLiked) {
       removeFromLikedSongs.mutate([trackId]);
     } else {
@@ -146,11 +146,11 @@ export const TrackList = ({
     if (!track || !track.id || !track.name) {
       return null;
     }
-    
+
     const trackNumber = isPlaylist ? index + 1 : (track.track_number || index + 1);
-    
+
     return (
-      <div 
+      <div
         className="flex items-center px-4 py-2 rounded-md hover:bg-gray-800 hover:bg-opacity-50 group cursor-pointer"
         onMouseEnter={() => setHoveredTrack(track.id)}
         onMouseLeave={() => setHoveredTrack(null)}
@@ -165,7 +165,7 @@ export const TrackList = ({
               <PlayIcon size={14} />
             </div>
           ) : hoveredTrack === track.id ? (
-            <button 
+            <button
               className="text-white hover:text-green-500 cursor-pointer"
               onClick={() => handlePlayTrack(track)}
             >
@@ -177,7 +177,7 @@ export const TrackList = ({
             </span>
           )}
         </div>
-        
+
         <div className="flex-1 min-w-0 mr-4">
           <div className="flex items-center space-x-2">
             <h4 className={`font-normal text-sm truncate ${
@@ -224,7 +224,7 @@ export const TrackList = ({
             </div>
           </div>
         )}
-        
+
         <div className="w-8 flex justify-center mr-4">
           <button
             onClick={(e) => {
@@ -240,7 +240,7 @@ export const TrackList = ({
             <HeartIcon size={16} filled={isTrackLiked(track.id)} />
           </button>
         </div>
-        
+
         <div className="w-16 text-right pr-2">
           <span className="text-gray-400 text-sm font-normal">
             {formatDuration(track.duration_ms || 0)}

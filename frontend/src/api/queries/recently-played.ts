@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const fetchRecentlyPlayed = async (accessToken: string, limit = 20) => {
   try {
@@ -9,16 +9,16 @@ export const fetchRecentlyPlayed = async (accessToken: string, limit = 20) => {
       params: {
         limit,
       },
-    })
-    
+    });
 
-    
-    return response.data
+
+
+    return response.data;
   } catch (error: any) {
     console.error('❌ Erro ao buscar recently played:', {
       status: error.response?.status,
-      message: error.response?.data?.error?.message || error.message
+      message: error.response?.data?.error?.message || error.message,
     });
     throw error;
   }
-}
+};

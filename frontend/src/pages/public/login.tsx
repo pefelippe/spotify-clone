@@ -1,5 +1,5 @@
-import { CustomButton } from '../../components/CustomButton'
-import { Logo } from '../../components/Logo'
+import { CustomButton } from '../../components/CustomButton';
+import { Logo } from '../../components/Logo';
 
 export const Login = () => {
 
@@ -12,13 +12,13 @@ export const Login = () => {
         </p>
         <CustomButton
           onClick={() => {
-            window.location.href = 'http://localhost:3001/auth/login'
+            window.location.href = 'http://localhost:3001/auth/login';
           }}
           variant="spotify"
           label="Entrar"
         />
       </div>
     </div>
-  )
-}
+  );
+};
 

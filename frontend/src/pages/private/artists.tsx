@@ -11,13 +11,13 @@ import { useTopArtists } from '../../hooks/useTopArtists';
 
 const Artistas = () => {
   const navigate = useNavigate();
-  const { 
-    data, 
-    isLoading, 
-    error, 
-    fetchNextPage, 
-    hasNextPage, 
-    isFetchingNextPage 
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useTopArtists();
 
   const allArtists = useMemo(() => {

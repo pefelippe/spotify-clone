@@ -33,7 +33,7 @@ export const NavigationButton = ({
         </span>
       );
     }
-    
+
     const IconComponent = icon;
     return (
       <div className={`transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>

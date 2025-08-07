@@ -39,7 +39,7 @@ const ArtistAlbum = ({ name, imageUrl, releaseDate, albumType, onClick, onPlay, 
   };
 
   return (
-    <div 
+    <div
       className="group flex flex-col cursor-pointer w-full transition-all duration-200 hover:bg-gray-800/50 p-3 rounded-lg"
       onClick={onClick}
     >
@@ -63,7 +63,7 @@ const ArtistAlbum = ({ name, imageUrl, releaseDate, albumType, onClick, onPlay, 
           </svg>
         </button>
       </div>
-      
+
       {/* Album Info */}
       <div className="flex flex-col">
         <h4 className="text-white text-sm font-medium truncate mb-1">

@@ -4,7 +4,7 @@ import { useAuth } from '../providers/auth-provider';
 
 export const useUserDetails = (userId: string) => {
   const { accessToken } = useAuth();
-  
+
   return useQuery({
     queryKey: ['userProfile', userId],
     queryFn: () => fetchUserProfile(userId, accessToken!),
@@ -16,7 +16,7 @@ export const useUserDetails = (userId: string) => {
 
 export const useUserPublicPlaylists = (userId: string) => {
   const { accessToken } = useAuth();
-  
+
   return useInfiniteQuery({
     queryKey: ['userPlaylists', userId],
     queryFn: ({ pageParam = 0 }) => fetchUserPlaylists(userId, accessToken!, 20, pageParam),

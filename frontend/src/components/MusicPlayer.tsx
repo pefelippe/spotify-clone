@@ -3,16 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '../providers/player-provider';
 import { useLikedTracks } from '../providers/liked-tracks-provider';
 import { AddToPlaylistModal } from './AddToPlaylistModal';
-import { 
-  PlayIcon, 
-  PauseIcon, 
-  SkipNextIcon, 
-  SkipPrevIcon, 
-  ShuffleIcon, 
-  RepeatIcon, 
+import {
+  PlayIcon,
+  PauseIcon,
+  SkipNextIcon,
+  SkipPrevIcon,
+  ShuffleIcon,
+  RepeatIcon,
   VolumeIcon,
   HeartIcon,
-  ChevronDownIcon
+  ChevronDownIcon,
 } from './SpotifyIcons';
 
 const formatTime = (ms: number) => {
@@ -112,7 +112,7 @@ export const MusicPlayer = () => {
     const newVolume = parseInt(e.target.value);
     setVolumeState(newVolume);
     setVolume(newVolume / 100);
-    
+
     if (newVolume > 0 && isMuted) {
       setIsMuted(false);
     }
@@ -171,7 +171,7 @@ export const MusicPlayer = () => {
     // Em telas grandes, só expandir se clicar na área de informações da música
     const target = e.target as HTMLElement;
     const isLargeScreen = window.innerWidth >= 1024; // lg breakpoint
-    
+
     if (isLargeScreen) {
       // Só expandir se clicar na div de informações da música ou botões de like/add
       const trackInfoArea = target.closest('.track-info-area');
@@ -182,7 +182,7 @@ export const MusicPlayer = () => {
       // Em telas pequenas, não expandir se clicar nos controles
       return;
     }
-    
+
     handlePlayerExpand();
   };
 
@@ -198,7 +198,7 @@ export const MusicPlayer = () => {
   // Player Expandido (Fullscreen)
   if (isExpanded) {
     return (
-      <div 
+      <div
         className={`fixed inset-0 bg-gradient-to-b from-gray-900 via-black to-black z-[100] ${
           isClosing ? 'animate-fade-out' : 'animate-fade-in'
         }`}
@@ -264,8 +264,8 @@ export const MusicPlayer = () => {
                     handleLike();
                   }}
                   className={`p-3 lg:p-4 transition-colors ml-4 cursor-pointer ${
-                    isCurrentTrackLiked 
-                      ? 'text-green-500 hover:text-green-400' 
+                    isCurrentTrackLiked
+                      ? 'text-green-500 hover:text-green-400'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -276,14 +276,14 @@ export const MusicPlayer = () => {
 
             {/* Progress Bar */}
             <div>
-              <div 
+              <div
                 className="w-full h-2 bg-gray-600 rounded-full cursor-pointer group mb-4"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleSeek(e);
                 }}
               >
-                <div 
+                <div
                   className="h-full bg-white rounded-full relative group-hover:bg-green-500 transition-colors"
                   style={{ width: `${progressPercent}%` }}
                 >
@@ -308,8 +308,8 @@ export const MusicPlayer = () => {
                     handleShuffle();
                   }}
                   className={`p-3 transition-colors cursor-pointer ${
-                    shuffle 
-                      ? 'text-green-500 hover:text-green-400' 
+                    shuffle
+                      ? 'text-green-500 hover:text-green-400'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -356,8 +356,8 @@ export const MusicPlayer = () => {
                     handleRepeat();
                   }}
                   className={`p-3 transition-colors relative cursor-pointer ${
-                    repeat > 0 
-                      ? 'text-green-500 hover:text-green-400' 
+                    repeat > 0
+                      ? 'text-green-500 hover:text-green-400'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -381,7 +381,7 @@ export const MusicPlayer = () => {
             id: currentTrack.id,
             uri: currentTrack.uri,
             name: currentTrack.name,
-            artists: currentTrack.artists
+            artists: currentTrack.artists,
           } : null}
         />
       </div>
@@ -390,7 +390,7 @@ export const MusicPlayer = () => {
 
   // Player Compacto (Mini Player)
   return (
-    <div 
+    <div
       className="fixed bottom-[72px] lg:bottom-0 left-0 lg:left-[250px] right-0 border-t border-gray-700/30 z-50 shadow-2xl"
       style={{ backgroundColor: '#000000' }}
       onClick={handlePlayerClick}
@@ -398,7 +398,7 @@ export const MusicPlayer = () => {
       <div className="flex flex-col">
         {/* Progress bar no topo - apenas desktop */}
 
-        
+
         <div className="flex items-center justify-between h-20 lg:h-24 px-4 lg:px-6 py-4 lg:py-6 hover:bg-gray-900/20 transition-colors duration-200">
           {/* Left: Track Info with Heart */}
           <div className="flex items-center space-x-3 lg:space-x-4 flex-1 min-w-0 max-w-[30%] lg:max-w-[25%] track-info-area">
@@ -421,8 +421,8 @@ export const MusicPlayer = () => {
                     handleLike();
                   }}
                   className={`p-1 lg:p-1.5 rounded-full transition-all duration-200 cursor-pointer flex-shrink-0 ml-2 hover:scale-110 ${
-                    isCurrentTrackLiked 
-                      ? 'text-green-500 hover:text-green-400' 
+                    isCurrentTrackLiked
+                      ? 'text-green-500 hover:text-green-400'
                       : 'text-gray-400 hover:text-white'
                   }`}
                 >
@@ -458,8 +458,8 @@ export const MusicPlayer = () => {
                   handleShuffle();
                 }}
                 className={`p-2 rounded-full transition-all duration-200 cursor-pointer hidden lg:flex items-center justify-center hover:bg-white/10 hover:scale-105 ${
-                  shuffle 
-                    ? 'text-green-500 hover:text-green-400' 
+                  shuffle
+                    ? 'text-green-500 hover:text-green-400'
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
@@ -506,8 +506,8 @@ export const MusicPlayer = () => {
                   handleRepeat();
                 }}
                 className={`p-2 rounded-full transition-all duration-200 cursor-pointer hidden lg:flex items-center justify-center hover:bg-white/10 hover:scale-105 relative ${
-                  repeat > 0 
-                    ? 'text-green-500 hover:text-green-400' 
+                  repeat > 0
+                    ? 'text-green-500 hover:text-green-400'
                     : 'text-gray-300 hover:text-white'
                 }`}
               >
@@ -523,7 +523,7 @@ export const MusicPlayer = () => {
               <div className="flex items-center gap-2 text-xs text-gray-400">
                 <span className="w-10 text-right">{formatTime(currentPosition)}</span>
                 <div className="flex-1 h-1 bg-gray-600 rounded-full cursor-pointer group" onClick={handleSeek}>
-                  <div 
+                  <div
                     className="h-full bg-green-500 rounded-full transition-all duration-300 relative group-hover:bg-green-400"
                     style={{ width: `${progressPercent}%` }}
                   >
@@ -572,15 +572,15 @@ export const MusicPlayer = () => {
                   onChange={handleVolumeChange}
                   className="w-full h-1 bg-gray-600 rounded-full appearance-none slider cursor-pointer transition-all duration-200 hover:h-1.5"
                   style={{
-                    background: `linear-gradient(to right, #1db954 0%, #1db954 ${volume}%, #4B5563 ${volume}%, #4B5563 100%)`
+                    background: `linear-gradient(to right, #1db954 0%, #1db954 ${volume}%, #4B5563 ${volume}%, #4B5563 100%)`,
                   }}
                 />
-                <div 
+                <div
                   className="absolute top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-lg pointer-events-none"
                   style={{ left: `calc(${volume}% - 6px)` }}
                 />
               </div>
-              
+
               {/* Fullscreen Icon */}
               <button
                 onClick={(e) => {
@@ -607,7 +607,7 @@ export const MusicPlayer = () => {
           id: currentTrack.id,
           uri: currentTrack.uri,
           name: currentTrack.name,
-          artists: currentTrack.artists
+          artists: currentTrack.artists,
         } : null}
       />
     </div>

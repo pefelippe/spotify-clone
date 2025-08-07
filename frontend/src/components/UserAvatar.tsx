@@ -11,11 +11,11 @@ interface UserAvatarProps {
 export const UserAvatar = ({ userId, displayName, size = 'md', className = '' }: UserAvatarProps) => {
   const { data: userProfile, isLoading } = useUserDetails(userId);
   const [imageError, setImageError] = useState(false);
-  
+
   const sizeClasses = {
     sm: 'w-6 h-6 text-xs',
     md: 'w-8 h-8 text-xs',
-    lg: 'w-12 h-12 text-sm'
+    lg: 'w-12 h-12 text-sm',
   };
 
   const profileImage = userProfile?.images?.[0]?.url;

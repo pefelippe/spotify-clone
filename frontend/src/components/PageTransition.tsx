@@ -15,10 +15,10 @@ export const PageTransition = ({ children, className = '' }: PageTransitionProps
   }, []);
 
   return (
-    <div 
+    <div
       className={`transition-all duration-300 ease-out ${
-        isVisible 
-          ? 'opacity-100 transform translate-y-0' 
+        isVisible
+          ? 'opacity-100 transform translate-y-0'
           : 'opacity-0 transform translate-y-4'
       } ${className}`}
     >

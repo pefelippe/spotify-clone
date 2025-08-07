@@ -35,7 +35,7 @@ export const InfiniteScrollList = ({
         fetchNextPage();
       }
     },
-    [hasNextPage, isFetchingNextPage, fetchNextPage]
+    [hasNextPage, isFetchingNextPage, fetchNextPage],
   );
 
   useEffect(() => {
@@ -69,8 +69,8 @@ export const InfiniteScrollList = ({
   return (
     <div className={className}>
       {items.map((item, index) => (
-        <div 
-          key={item.id || index} 
+        <div
+          key={item.id || index}
           className={itemClassName}
         >
           {renderItem(item, index)}

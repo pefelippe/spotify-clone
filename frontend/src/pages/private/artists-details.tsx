@@ -20,49 +20,49 @@ const ArtistaDetalhes = () => {
   const { playTrack, deviceId, isReady } = usePlayer();
   const [discographyFilter, setDiscographyFilter] = useState<DiscographyFilter>('populares');
   // Discography (albums + singles)
-  const { 
-    data: discographyData, 
-    isLoading: isLoadingDiscography, 
-    error: discographyError, 
-    fetchNextPage: fetchNextDiscographyPage, 
-    hasNextPage: hasNextDiscographyPage, 
-    isFetchingNextPage: isFetchingNextDiscographyPage 
+  const {
+    data: discographyData,
+    isLoading: isLoadingDiscography,
+    error: discographyError,
+    fetchNextPage: fetchNextDiscographyPage,
+    hasNextPage: hasNextDiscographyPage,
+    isFetchingNextPage: isFetchingNextDiscographyPage,
   } = useArtistDiscography(artistId!);
 
   // Collaborations (appears_on)
-  const { 
-    data: collaborationsData, 
-    isLoading: isLoadingCollaborations, 
-    error: collaborationsError, 
-    fetchNextPage: fetchNextCollaborationsPage, 
-    hasNextPage: hasNextCollaborationsPage, 
-    isFetchingNextPage: isFetchingNextCollaborationsPage 
+  const {
+    data: collaborationsData,
+    isLoading: isLoadingCollaborations,
+    error: collaborationsError,
+    fetchNextPage: fetchNextCollaborationsPage,
+    hasNextPage: hasNextCollaborationsPage,
+    isFetchingNextPage: isFetchingNextCollaborationsPage,
   } = useArtistCollaborations(artistId!);
-  
+
   // Artist details
-  const { 
-    data: artistDetails, 
-    isLoading: isLoadingArtist, 
-    error: artistError 
+  const {
+    data: artistDetails,
+    isLoading: isLoadingArtist,
+    error: artistError,
   } = useArtistDetails(artistId!);
 
   // Top tracks
-  const { 
-    data: topTracksData, 
-    isLoading: isLoadingTopTracks, 
-    error: topTracksError 
+  const {
+    data: topTracksData,
+    isLoading: isLoadingTopTracks,
+    error: topTracksError,
   } = useArtistTopTracks(artistId!);
 
   // Always call hooks in the same order - before any conditional returns
   const allDiscography = useMemo(() => {
-    return discographyData?.pages.flatMap(page => 
-      page.items.filter((album: any) => album.album_type !== 'compilation')
+    return discographyData?.pages.flatMap(page =>
+      page.items.filter((album: any) => album.album_type !== 'compilation'),
     ) || [];
   }, [discographyData]);
 
   const allCollaborations = useMemo(() => {
-    return collaborationsData?.pages.flatMap(page => 
-      page.items.filter((album: any) => album.album_type !== 'compilation')
+    return collaborationsData?.pages.flatMap(page =>
+      page.items.filter((album: any) => album.album_type !== 'compilation'),
     ) || [];
   }, [collaborationsData]);
 
@@ -75,18 +75,18 @@ const ArtistaDetalhes = () => {
     switch (discographyFilter) {
       case 'populares':
         // Sort by popularity (using release date as proxy for now)
-        return [...allDiscography].sort((a: any, b: any) => 
-          new Date(b.release_date).getTime() - new Date(a.release_date).getTime()
+        return [...allDiscography].sort((a: any, b: any) =>
+          new Date(b.release_date).getTime() - new Date(a.release_date).getTime(),
         ).slice(0, 20);
       case 'albuns':
         return allDiscography.filter((item: any) => item.album_type === 'album');
       case 'singles':
-        return allDiscography.filter((item: any) => 
-          item.album_type === 'single' && item.total_tracks === 1
+        return allDiscography.filter((item: any) =>
+          item.album_type === 'single' && item.total_tracks === 1,
         );
       case 'eps':
-        return allDiscography.filter((item: any) => 
-          item.album_type === 'single' && item.total_tracks > 1
+        return allDiscography.filter((item: any) =>
+          item.album_type === 'single' && item.total_tracks > 1,
         );
       default:
         return allDiscography;
@@ -102,17 +102,17 @@ const ArtistaDetalhes = () => {
   const handleAlbumPlay = (albumId: string, albumType: string) => {
     const contextUri = `spotify:album:${albumId}`;
 
-    
+
     if (!isReady) {
       console.warn('⚠️ Player não está pronto ainda');
       return;
     }
-    
+
     if (!deviceId) {
       console.warn('⚠️ Device ID não disponível');
       return;
     }
-    
+
     // For all album types (album, single, compilation), play the album context
     // Pass empty string for uri to play from the beginning of the context
     playTrack('', contextUri);
@@ -191,7 +191,7 @@ const ArtistaDetalhes = () => {
             )}
             <p className="text-gray-400">{allDiscography.length} lançamentos</p>
           </div>
-          
+
           {/* Genres as tags */}
           {artistDetails?.genres && artistDetails.genres.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -224,14 +224,14 @@ const ArtistaDetalhes = () => {
       {allDiscography.length > 0 && (
         <div className="mb-12">
           <h3 className="text-2xl font-semibold text-white-text mb-6">Discografia</h3>
-          
+
           {/* Filter Tabs */}
           <div className="flex space-x-1 mb-6 bg-gray-800 p-1 rounded-lg w-fit">
             {[
               { key: 'populares', label: 'Lançamentos populares' },
               { key: 'albuns', label: 'Álbuns' },
               { key: 'singles', label: 'Singles' },
-              { key: 'eps', label: 'EPs' }
+              { key: 'eps', label: 'EPs' },
             ].map((filter) => (
               <button
                 key={filter.key}

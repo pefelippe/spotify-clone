@@ -1,25 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useTopArtists } from '../../hooks/useTopArtists';
 import { useUserPlaylists } from '../../hooks/useUserPlaylists';
 import { useLikedSongs } from '../../hooks/useLikedSongs';
-import { useRecentlyPlayed } from '../../hooks/useRecentlyPlayed';
 import { usePlayer } from '../../providers/player-provider';
-import Album from '../../components/Album';
-import { QueryState } from '../../components/QueryState';
 import { PlayIcon, HeartIcon } from '../../components/SpotifyIcons';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { data: topArtistsData, isLoading: isLoadingArtists, error: artistsError } = useTopArtists();
   const { data: playlistsData, isLoading: isLoadingPlaylists, error: playlistsError } = useUserPlaylists();
   const { data: likedSongsData, isLoading: isLoadingLikedSongs, error: likedSongsError } = useLikedSongs();
-  const { data: recentlyPlayedData, isLoading: isLoadingRecentlyPlayed, error: recentlyPlayedError } = useRecentlyPlayed();
   const { playTrack, isReady, deviceId } = usePlayer();
 
-  const topArtists = topArtistsData?.pages[0]?.items?.slice(0, 6) || [];
   const userPlaylists = playlistsData?.pages[0]?.items?.slice(0, 5) || [];
   const likedSongsCount = likedSongsData?.pages[0]?.total || 0;
-  const recentlyPlayedTracks = recentlyPlayedData?.items?.slice(0, 6) || [];
 
   const handlePlaylistClick = (playlistId: string) => {
     navigate(`/playlist/${playlistId}`);
@@ -30,32 +22,25 @@ const Home = () => {
   };
 
   const handlePlaylistPlay = (playlistId: string) => {
-    if (!isReady) {
+    if (!isReady || !deviceId) {
       return;
     }
-    
-    if (!deviceId) {
-      return;
-    }
-    
+
     const contextUri = `spotify:playlist:${playlistId}`;
     playTrack('', contextUri);
   };
 
   const handleLikedSongsPlay = () => {
-    if (!isReady) {
+    if (!isReady || !deviceId) {
       return;
     }
-    
-    if (!deviceId) {
-      return;
-    }
-    
+
     const contextUri = 'spotify:user:collection:tracks';
     playTrack('', contextUri);
   };
 
   const quickAccessPlaylists = userPlaylists.slice(0, 5);
+
   return (
     <div className="w-full p-6 space-y-8">
       <section>
@@ -70,15 +55,15 @@ const Home = () => {
               <div className="flex-1 px-4">
                 <h3 className="text-white font-medium">Músicas Curtidas</h3>
                 <p className="text-gray-200 text-sm">
-                {isLoadingLikedSongs ? 'Carregando...' : 
-                  likedSongsError?.response?.status === 403 ? 'Faça login novamente' : 
-                  likedSongsError ? 'Erro ao carregar' : 
+                {isLoadingLikedSongs ? 'Carregando...' :
+                  likedSongsError?.response?.status === 403 ? 'Faça login novamente' :
+                  likedSongsError ? 'Erro ao carregar' :
                   likedSongsCount > 0 ? `${likedSongsCount} músicas` : 'Nenhuma música curtida'}
                 </p>
               </div>
               {!likedSongsError && likedSongsCount > 0 && (
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-4">
-                  <button 
+                  <button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleLikedSongsPlay();
@@ -106,7 +91,7 @@ const Home = () => {
                 <h3 className="text-white font-medium truncate">{playlist.name}</h3>
               </div>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 mr-4">
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePlaylistPlay(playlist.id);

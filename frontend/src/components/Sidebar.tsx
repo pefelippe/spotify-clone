@@ -28,10 +28,10 @@ export const Sidebar = () => {
       <div className="flex-1 px-3 flex items-start justify-start">
         <nav className="space-y-2 w-full">
           {SidebarItems.map((item) => (
-            <NavigationButton 
-              key={item.name} 
-              name={item.name} 
-              path={item.path} 
+            <NavigationButton
+              key={item.name}
+              name={item.name}
+              path={item.path}
               icon={item.icon}
               baseClassName="w-full flex items-start justify-start gap-4 px-4 py-3 rounded-lg transition-all duration-200 ease-out font-medium cursor-pointer group"
               activeClassName="text-white-text bg-gray-800/60 shadow-sm"

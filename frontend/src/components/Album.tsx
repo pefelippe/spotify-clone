@@ -24,7 +24,7 @@ const Album = ({ name, imageUrl, size = 'md', onClick, onPlay }: AlbumProps) => 
   };
 
   return (
-    <div 
+    <div
       className="group flex flex-col items-center space-y-3 cursor-pointer transition-all duration-200 hover:bg-gray-800/50 p-3 rounded-lg"
       onClick={onClick}
     >

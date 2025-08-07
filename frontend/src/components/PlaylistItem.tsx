@@ -18,7 +18,7 @@ const PlaylistItem = ({ name, imageUrl, ownerName, onClick, onPlay, playlistId }
   };
 
   return (
-    <div 
+    <div
       className="group flex items-center space-x-3 cursor-pointer w-full transition-all duration-200 hover:bg-gray-800/50 p-3 rounded-lg"
       onClick={onClick}
     >
@@ -39,7 +39,7 @@ const PlaylistItem = ({ name, imageUrl, ownerName, onClick, onPlay, playlistId }
           </svg>
         </button>
       </div>
-      
+
       {/* Playlist Info */}
       <div className="flex flex-col">
         <h3 className="text-white-text font-semibold text-sm truncate">

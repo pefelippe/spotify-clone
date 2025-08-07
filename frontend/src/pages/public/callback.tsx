@@ -1,22 +1,22 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react';
 
-import { useAuth } from '../../providers/auth-provider'
+import { useAuth } from '../../providers/auth-provider';
 
 export const Callback = () => {
-  const { authenticate } = useAuth()
-  const hasAuthenticated = useRef(false)
+  const { authenticate } = useAuth();
+  const hasAuthenticated = useRef(false);
 
   useEffect(() => {
     if (hasAuthenticated.current) {
-      return
+      return;
     }
-    const urlParams = new URLSearchParams(window.location.search)
-    const code = urlParams.get('code')
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
     if (code) {
-      authenticate(code)
-      hasAuthenticated.current = true
+      authenticate(code);
+      hasAuthenticated.current = true;
     }
-  }, [authenticate])
+  }, [authenticate]);
 
-  return <p className="text-white text-center mt-20">Autenticando com o Spotify...</p>
-}
+  return <p className="text-white text-center mt-20">Autenticando com o Spotify...</p>;
+};

@@ -9,13 +9,13 @@ const PlaylistDetalhes = () => {
   const { playlistId } = useParams();
   const navigate = useNavigate();
   const { data: playlistDetails, isLoading: isLoadingDetails, error: detailsError } = usePlaylistDetails(playlistId!);
-  const { 
-    data: tracksData, 
-    isLoading: isLoadingTracks, 
+  const {
+    data: tracksData,
+    isLoading: isLoadingTracks,
     error: tracksError,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage 
+    isFetchingNextPage,
   } = usePlaylistTracks(playlistId!);
 
   const handleOwnerClick = (ownerId: string) => {
@@ -37,7 +37,7 @@ const PlaylistDetalhes = () => {
     return (
       <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
-          <BackButton artistName={isLoadingDetails ? "Carregando..." : "Erro"} />
+          <BackButton artistName={isLoadingDetails ? 'Carregando...' : 'Erro'} />
           <h1 className="text-2xl font-bold text-white-text">
             {isLoadingDetails ? 'Carregando playlist...' : 'Erro ao carregar playlist'}
           </h1>
@@ -58,7 +58,7 @@ const PlaylistDetalhes = () => {
     return date.toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -66,16 +66,16 @@ const PlaylistDetalhes = () => {
     if (!tracks?.pages) {
       return '';
     }
-    
+
     const totalMs = tracks.pages.reduce((total: number, page: any) => {
       return total + page.items.reduce((pageTotal: number, item: any) => {
         return pageTotal + (item.track?.duration_ms || 0);
       }, 0);
     }, 0);
-    
+
     const hours = Math.floor(totalMs / 3600000);
     const minutes = Math.floor((totalMs % 3600000) / 60000);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}min`;
     }
@@ -109,12 +109,12 @@ const PlaylistDetalhes = () => {
           )}
           <div className="flex flex-wrap items-center text-gray-400 text-sm space-x-1">
             <div className="flex items-center space-x-2">
-              <UserAvatar 
-                userId={playlistDetails.owner?.id || ''} 
-                displayName={playlistDetails.owner?.display_name || ''} 
+              <UserAvatar
+                userId={playlistDetails.owner?.id || ''}
+                displayName={playlistDetails.owner?.display_name || ''}
                 size="md"
               />
-              <span 
+              <span
                 className="font-medium text-white-text hover:underline cursor-pointer hover:text-green-500"
                 onClick={() => handleOwnerClick(playlistDetails.owner?.id)}
               >

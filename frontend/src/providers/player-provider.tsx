@@ -117,7 +117,7 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
     }
 
     let body: any;
-    
+
     if (contextUri) {
       // Check if the context is an artist - artists don't support offset
       if (contextUri.startsWith('spotify:artist:')) {
@@ -152,15 +152,15 @@ export const PlayerProvider = ({ children }: { children: ReactNode }) => {
         console.error('❌ Erro na resposta da API:', {
           status: response.status,
           statusText: response.statusText,
-          error: errorData
+          error: errorData,
         });
-        
+
         if (response.status === 403) {
           console.error('❌ Erro 403: Você precisa ter Spotify Premium para usar o Web Playback SDK');
           setIsPremiumRequired(true);
         }
       } else {
-  
+
       }
     } catch (error) {
       console.error('❌ Erro ao tocar música:', error);

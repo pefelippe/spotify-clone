@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const fetchUserPlaylists = async (accessToken: string, limit = 20, offset = 0) => {
   const response = await axios.get('https://api.spotify.com/v1/me/playlists', {
@@ -9,6 +9,6 @@ export const fetchUserPlaylists = async (accessToken: string, limit = 20, offset
       limit,
       offset,
     },
-  })
-  return response.data
-}
+  });
+  return response.data;
+};

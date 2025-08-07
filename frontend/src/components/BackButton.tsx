@@ -14,9 +14,9 @@ export const BackButton = ({artistName}: BackButtonProps) => {
   return (
     <button
       onClick={handleClick}
-      className={`text-white-text hover:text-gray-300 transition-colors text-lg cursor-pointer`}
+      className={'text-white-text hover:text-gray-300 transition-colors text-lg cursor-pointer'}
     >
-     <span className="text-2xl">{"<-"} {artistName}</span>
+     <span className="text-2xl">{'<-'} {artistName}</span>
     </button>
   );
 };

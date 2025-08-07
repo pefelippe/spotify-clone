@@ -23,7 +23,7 @@ const UserProfile = () => {
     return (
       <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
-          <BackButton artistName={isLoading ? "Carregando..." : "Erro"} />
+          <BackButton artistName={isLoading ? 'Carregando...' : 'Erro'} />
           <h1 className="text-2xl font-bold text-white-text">
             {isLoading ? 'Carregando perfil...' : 'Erro ao carregar perfil'}
           </h1>

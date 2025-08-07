@@ -19,8 +19,8 @@ export const QueryState = ({
   className = '',
   centered = true,
 }: QueryStateProps) => {
-  const containerClasses = centered 
-    ? 'flex items-center justify-center py-12' 
+  const containerClasses = centered
+    ? 'flex items-center justify-center py-12'
     : 'py-4';
 
   if (isLoading) {

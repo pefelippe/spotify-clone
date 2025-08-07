@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const fetchTopArtists = async (accessToken: string, limit = 20, offset = 0) => {
   try {
@@ -10,10 +10,10 @@ export const fetchTopArtists = async (accessToken: string, limit = 20, offset = 
         limit,
         offset,
       },
-    })
-    
-    return response.data
+    });
+
+    return response.data;
   } catch (error: any) {
     throw error;
   }
-}
+};

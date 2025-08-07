@@ -19,21 +19,21 @@ const Playlists = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { playTrack } = usePlayer();
-  const { 
-    data, 
-    isLoading, 
-    error, 
-    fetchNextPage, 
-    hasNextPage, 
-    isFetchingNextPage 
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useUserPlaylists();
-  const { 
-    data: likedSongsData, 
-    isLoading: isLoadingLikedSongs, 
+  const {
+    data: likedSongsData,
+    isLoading: isLoadingLikedSongs,
     error: likedSongsError,
     fetchNextPage: fetchNextLikedSongs,
     hasNextPage: hasNextLikedSongs,
-    isFetchingNextPage: isFetchingNextLikedSongs
+    isFetchingNextPage: isFetchingNextLikedSongs,
   } = useLikedSongs();
   const { data: userProfile } = useUserProfile();
 
@@ -63,7 +63,6 @@ const Playlists = () => {
   };
 
   const handleLikedSongsClick = () => {
-    // Navegar para a página de liked songs como playlist especial
     navigate('/playlists/liked-songs');
   };
 
@@ -85,13 +84,11 @@ const Playlists = () => {
       <CustomButton
         label="Criar Playlist"
         onClick={handleCreatePlaylist}
-        variant="primary"
-        customClassName="bg-green-spotify hover:bg-green-600"
+        variant="spotify"
       />
     </PageHeader>
   );
 
-  // Se estamos na página de liked songs, renderizar o conteúdo de liked songs
   if (isLikedSongsPage) {
     if (isLoadingLikedSongs || likedSongsError) {
       return (
@@ -111,21 +108,18 @@ const Playlists = () => {
       <div className="w-full p-6">
         {pageHeader}
 
-        {/* Playlist Header - Similar ao template de playlist */}
         <div className="flex items-end space-x-6 mb-8">
-          {/* Playlist Image */}
           <div className="w-48 h-48 bg-gradient-to-br from-purple-400 to-white flex items-center justify-center rounded-lg shadow-lg">
             <HeartIcon size={80} className="text-white" filled />
           </div>
 
-          {/* Playlist Info */}
           <div className="flex-1">
             <div className="mb-4">
               <h1 className="text-4xl font-bold text-white-text mb-2">Músicas Curtidas</h1>
                              <div className="flex items-center space-x-2 text-gray-400">
                  {userProfile?.images?.[0]?.url ? (
-                   <img 
-                     src={userProfile.images[0].url} 
+                   <img
+                     src={userProfile.images[0].url}
                      alt={userProfile.display_name || 'Usuário'}
                      className="w-6 h-6 rounded-full object-cover"
                    />
@@ -142,7 +136,6 @@ const Playlists = () => {
                </div>
             </div>
 
-            {/* Play Button */}
             <button
               onClick={handleLikedSongsPlay}
               className="px-8 py-3 bg-green-spotify hover:bg-green-600 text-black font-bold rounded-full transition-colors flex items-center space-x-2"
@@ -167,7 +160,6 @@ const Playlists = () => {
     );
   }
 
-  // Página normal de playlists
   if (isLoading || error) {
     return (
       <PageWithQueryState
@@ -195,7 +187,6 @@ const Playlists = () => {
     <div className="w-full p-6">
       {pageHeader}
 
-      {/* Liked Songs Playlist - Always First */}
       <div className="mb-6">
         <div
           className="group flex items-center bg-gradient-to-r from-purple-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 p-4"
@@ -207,15 +198,15 @@ const Playlists = () => {
           <div className="flex-1">
             <h3 className="text-white font-medium text-lg">Músicas Curtidas</h3>
             <p className="text-gray-200 text-sm">
-              {isLoadingLikedSongs ? 'Carregando...' : 
-               likedSongsError?.response?.status === 403 ? 'Não disponível' : 
-               likedSongsError ? 'Erro ao carregar' : 
+              {isLoadingLikedSongs ? 'Carregando...' :
+               likedSongsError?.response?.status === 403 ? 'Não disponível' :
+               likedSongsError ? 'Erro ao carregar' :
                likedSongsCount > 0 ? `${likedSongsCount} músicas` : 'Nenhuma música curtida'}
             </p>
           </div>
           {!likedSongsError && likedSongsCount > 0 && (
             <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <button 
+              <button
                 onClick={(e) => {
                   e.stopPropagation();
                   handleLikedSongsPlay();
@@ -231,7 +222,6 @@ const Playlists = () => {
         </div>
       </div>
 
-      {/* User Playlists */}
       <InfiniteScrollList
         items={allPlaylists}
         renderItem={renderPlaylistItem}
@@ -285,7 +275,6 @@ const Playlists = () => {
             <CustomButton
               label="Criar"
               onClick={() => {
-                // TODO: Implement playlist creation
                 handleCloseModal();
               }}
               variant="primary"

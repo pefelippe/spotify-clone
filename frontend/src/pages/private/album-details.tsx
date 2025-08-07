@@ -9,13 +9,13 @@ const AlbumDetalhes = () => {
   const { albumId } = useParams();
   const navigate = useNavigate();
   const { data: albumDetails, isLoading: isLoadingDetails, error: detailsError } = useAlbumDetails(albumId!);
-  const { 
-    data: tracksData, 
-    isLoading: isLoadingTracks, 
+  const {
+    data: tracksData,
+    isLoading: isLoadingTracks,
     error: tracksError,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage 
+    isFetchingNextPage,
   } = useAlbumTracks(albumId!);
 
   if (!albumId) {
@@ -33,7 +33,7 @@ const AlbumDetalhes = () => {
     return (
       <div className="w-full p-6">
         <div className="flex items-center space-x-4 mb-8">
-          <BackButton artistName={isLoadingDetails ? "Carregando..." : "Erro"} />
+          <BackButton artistName={isLoadingDetails ? 'Carregando...' : 'Erro'} />
           <h1 className="text-2xl font-bold text-white-text">
             {isLoadingDetails ? 'Carregando álbum...' : 'Erro ao carregar álbum'}
           </h1>
@@ -58,7 +58,7 @@ const AlbumDetalhes = () => {
     return date.toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -66,16 +66,16 @@ const AlbumDetalhes = () => {
     if (!tracks?.pages) {
       return '';
     }
-    
+
     const totalMs = tracks.pages.reduce((total: number, page: any) => {
       return total + page.items.reduce((pageTotal: number, item: any) => {
         return pageTotal + (item.duration_ms || 0);
       }, 0);
     }, 0);
-    
+
     const hours = Math.floor(totalMs / 3600000);
     const minutes = Math.floor((totalMs % 3600000) / 60000);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}min`;
     }
@@ -97,8 +97,8 @@ const AlbumDetalhes = () => {
         />
         <div className="flex-1">
           <p className="text-gray-400 text-sm font-medium uppercase tracking-wide">
-            {albumDetails.album_type === 'album' ? 'Álbum' : 
-             albumDetails.album_type === 'single' ? 'Single' : 
+            {albumDetails.album_type === 'album' ? 'Álbum' :
+             albumDetails.album_type === 'single' ? 'Single' :
              albumDetails.album_type}
           </p>
           <h1 className="text-4xl md:text-6xl font-bold text-white-text mb-4">
@@ -106,12 +106,12 @@ const AlbumDetalhes = () => {
           </h1>
           <div className="flex flex-wrap items-center text-gray-400 text-sm space-x-1">
             <div className="flex items-center space-x-2">
-              <UserAvatar 
-                userId={albumDetails.artists?.[0]?.id || ''} 
-                displayName={albumDetails.artists?.[0]?.name || ''} 
+              <UserAvatar
+                userId={albumDetails.artists?.[0]?.id || ''}
+                displayName={albumDetails.artists?.[0]?.name || ''}
                 size="md"
               />
-              <span 
+              <span
                 className="font-medium text-white-text hover:underline cursor-pointer hover:text-green-500"
                 onClick={() => handleArtistClick(albumDetails.artists?.[0]?.id)}
               >

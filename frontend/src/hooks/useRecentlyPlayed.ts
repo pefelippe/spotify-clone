@@ -18,4 +18,4 @@ export const useRecentlyPlayed = () => {
       return failureCount < 3;
     },
   });
-}; 
+};

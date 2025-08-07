@@ -15,7 +15,7 @@ export const useAddToPlaylist = () => {
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ['playlistTracks', variables.playlistId]
+        queryKey: ['playlistTracks', variables.playlistId],
       });
     },
   });
