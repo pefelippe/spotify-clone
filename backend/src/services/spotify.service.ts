@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import qs from 'querystring'
 
 import { CLIENT_ID, CLIENT_SECRET, REDIRECT_URI } from '../config/env'
@@ -22,10 +22,11 @@ export const getToken = async (code: string) => {
   try {
     const response = await makeSpotifyRequest(body)
     return response.data
-  } catch (error: any) {
-    console.error('Spotify API error:', error.message)
-    if (error.response?.data) {
-      console.error('Response:', error.response.data)
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    console.error('Spotify API error:', axiosError.message)
+    if (axiosError.response?.data) {
+      console.error('Response:', axiosError.response.data)
     }
     throw error
   }
@@ -40,10 +41,11 @@ export const getRefreshToken = async (refresh_token: string) => {
   try {
     const response = await makeSpotifyRequest(body)
     return response.data
-  } catch (error: any) {
-    console.error('Spotify refresh error:', error.message)
-    if (error.response?.data) {
-      console.error('Response:', error.response.data)
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError
+    console.error('Spotify refresh error:', axiosError.message)
+    if (axiosError.response?.data) {
+      console.error('Response:', axiosError.response.data)
     }
     throw error
   }

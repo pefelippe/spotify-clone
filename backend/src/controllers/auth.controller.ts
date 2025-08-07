@@ -3,6 +3,11 @@ import { getToken, getRefreshToken } from '../services/spotify.service'
 import { buildQueryString } from '../utils/build-query-string'
 import { CLIENT_ID, REDIRECT_URI } from '../config/env'
 
+interface SpotifyError {
+  message: string;
+  status?: number;
+}
+
 const SCOPES = [
   'user-read-private',
   'user-read-email',
@@ -47,7 +52,9 @@ export const callback = async (req: Request, res: Response) => {
   try {
     const data = await getToken(code)
     res.json(data)
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as SpotifyError
+    console.error('Token exchange error:', error.message)
     res.status(500).json({ error: 'Failed to exchange token' })
   }
 }
@@ -61,7 +68,9 @@ export const refreshToken = async (req: Request, res: Response) => {
   try {
     const data = await getRefreshToken(refresh_token)
     res.json(data)
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const error = err as SpotifyError
+    console.error('Token refresh error:', error.message)
     res.status(500).json({ error: 'Failed to refresh token' })
   }
 }
