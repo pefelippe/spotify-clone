@@ -4,8 +4,8 @@ import { buildQueryString } from '../utils/build-query-string'
 import { CLIENT_ID, REDIRECT_URI } from '../config/env'
 
 interface SpotifyError {
-  message: string;
-  status?: number;
+  message: string
+  status?: number
 }
 
 const SCOPES = [

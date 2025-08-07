@@ -5,8 +5,8 @@ import dotenv from 'dotenv'
 import authRoutes from './routes/auth.routes'
 
 interface ErrorWithMessage {
-  message: string;
-  status?: number;
+  message: string
+  status?: number
 }
 
 dotenv.config({
@@ -29,10 +29,17 @@ app.use(express.json())
 
 app.use('/auth', authRoutes)
 
-app.use((err: ErrorWithMessage, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Error:', err.message)
-  res.status(500).json({ error: 'Internal server error' })
-})
+app.use(
+  (
+    err: ErrorWithMessage,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ) => {
+    console.error('Error:', err.message)
+    res.status(500).json({ error: 'Internal server error' })
+  }
+)
 
 const PORT = process.env.PORT || 3001
 
